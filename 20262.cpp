@@ -2,8 +2,7 @@
 /* ----------------   PROYECTO FINAL - CGeIHC --------------------------*/
 /*-----------------    2026-2   ---------------------------*/
 /*------------- Alumno: Garcia Vazquez Javier Alejandro   ---------------*/
-/*------------- Alumno: Marin MontaÒo Josue   ---------------*/
-/*------------- No. Cuenta: 319129793      ---------------*/
+/*------------- Alumno: Marin Monta√±o Josue   ---------------*/
 
 #include <Windows.h>
 
@@ -47,7 +46,7 @@ GLuint VBO[3], VAO[3], EBO[3];
 Camera camera(glm::vec3(0.0f, 2.0f, 20.0f));
 float MovementSpeed = 0.1f;
 GLfloat lastX = SCR_WIDTH / 2.0f,
-		lastY = SCR_HEIGHT / 2.0f;
+lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
 //Timing
@@ -58,8 +57,8 @@ lastFrame = 0.0f;
 
 void getResolution(void);
 void myData(void);							// De la practica 4
-void LoadTextures(void);					// De la pr·ctica 6
-unsigned int generateTextures(char*, bool, bool);	// De la pr·ctica 6
+void LoadTextures(void);					// De la pr√°ctica 6
+unsigned int generateTextures(char*, bool, bool);	// De la pr√°ctica 6
 
 //For Keyboard
 float	movX = 0.0f,
@@ -94,30 +93,30 @@ recorrido3 = false,
 recorrido4 = false;
 
 
-//Keyframes (ManipulaciÛn y dibujo)
+//Keyframes (Manipulaci√≥n y dibujo)
 float	posX = 0.0f,
-		posY = 0.0f,
-		posZ = 0.0f,
-		rotRodIzq = 0.0f,
-		giroMonito = 0.0f,
-	    giroCabeza = 0.0f,
-		giroBrazoDer = 0.0f,
-		giroBrazoIzq = 0.0f,
-		giroPiernaDer = 0.0f,
-		giroPiernaIzq = 0.0f;
+posY = 0.0f,
+posZ = 0.0f,
+rotRodIzq = 0.0f,
+giroMonito = 0.0f,
+giroCabeza = 0.0f,
+giroBrazoDer = 0.0f,
+giroBrazoIzq = 0.0f,
+giroPiernaDer = 0.0f,
+giroPiernaIzq = 0.0f;
 
 float	incX = 0.0f,
-		incY = 0.0f,
-		incZ = 0.0f,
-		rotRodIzqInc = 0.0f,
-		giroMonitoInc = 0.0f,
-	    giroCabezaInc = 0.0f,
-		giroBrazoDerInc = 0.0f,
-		giroBrazoIzqInc = 0.0f,
-		giroPiernaDerInc = 0.0f,
-		giroPiernaIzqInc = 0.0f;
+incY = 0.0f,
+incZ = 0.0f,
+rotRodIzqInc = 0.0f,
+giroMonitoInc = 0.0f,
+giroCabezaInc = 0.0f,
+giroBrazoDerInc = 0.0f,
+giroBrazoIzqInc = 0.0f,
+giroPiernaDerInc = 0.0f,
+giroPiernaIzqInc = 0.0f;
 
-//con em MAX FRAMES son la cantidad de frames para generar la animacion. El detalle est· en que consumir· memoria al guardar los datos para animar.
+//con em MAX FRAMES son la cantidad de frames para generar la animacion. El detalle est√° en que consumir√° memoria al guardar los datos para animar.
 #define MAX_FRAMES 9
 int i_max_steps = 60;
 int i_curr_steps = 0;
@@ -138,12 +137,12 @@ typedef struct _frame
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 0;			//introducir n˙mero en caso de tener Key guardados
-//int FrameIndex = 3;			//Si ya tenemos frames guardados, introducimos el n˙mero de frames que tenemos para seguir guardando a partir de ahÌ. En este caso, como ya tengo 3 frames guardados, introduzco el n˙mero 3 para seguir guardando a partir de ahÌ.
+int FrameIndex = 0;			//introducir n√∫mero en caso de tener Key guardados
+//int FrameIndex = 3;			//Si ya tenemos frames guardados, introducimos el n√∫mero de frames que tenemos para seguir guardando a partir de ah√≠. En este caso, como ya tengo 3 frames guardados, introduzco el n√∫mero 3 para seguir guardando a partir de ah√≠.
 bool play = false;
 int playIndex = 0;
 
-//Para guardar un arreglo con los frames que forman parte de la animaciÛn
+//Para guardar un arreglo con los frames que forman parte de la animaci√≥n
 void saveFrame(void)
 {
 	//printf("frameindex %d\n", FrameIndex);
@@ -168,7 +167,7 @@ void saveFrame(void)
 	FrameIndex++;
 }
 
-//Para empezar la animaciÛn desde el primer frame que se guardÛ
+//Para empezar la animaci√≥n desde el primer frame que se guard√≥
 void resetElements(void)
 {
 	posX = KeyFrame[0].posX;
@@ -213,8 +212,8 @@ unsigned int generateTextures(const char* filename, bool alfa, bool isPrimitive)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load image, create texture and generate mipmaps
 	int width, height, nrChannels;
-	
-	if(isPrimitive)
+
+	if (isPrimitive)
 		stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
 	else
 		stbi_set_flip_vertically_on_load(false); // tell stb_image.h to flip loaded texture's on the y-axis.
@@ -252,7 +251,7 @@ void LoadTextures()
 
 
 
-void animate(void) 
+void animate(void)
 {
 	if (play)
 	{
@@ -292,7 +291,7 @@ void animate(void)
 		}
 	}
 
-	//VehÌculo
+	//Veh√≠culo
 	if (animacion)
 	{
 		movAuto_x += 3.0f;
@@ -468,7 +467,7 @@ int main() {
 	myData();
 	glEnable(GL_DEPTH_TEST);
 
-	
+
 
 	// build and compile shaders
 	// -------------------------
@@ -476,7 +475,7 @@ int main() {
 	Shader staticShader("Shaders/shader_Lights.vs", "Shaders/shader_Lights_mod.fs");	//To use with static models
 	Shader skyboxShader("Shaders/skybox.vs", "Shaders/skybox.fs");	//To use with skybox
 	Shader animShader("Shaders/anim.vs", "Shaders/anim.fs");	//To use with animated models 
-	
+
 	vector<std::string> faces{
 		"resources/skybox/right.jpg",
 		"resources/skybox/left.jpg",
@@ -496,31 +495,16 @@ int main() {
 	// load models
 	// -----------
 	Model piso("resources/objects/piso/piso.obj");
-	Model carro("resources/objects/lambo/carroceria.obj");
-	Model llanta("resources/objects/lambo/Wheel.obj");
-	Model casaVieja("resources/objects/casa/OldHouse.obj");
-	//Model cubo("resources/objects/cubo/cube02.obj");
-	Model casaDoll("resources/objects/casa/DollHouse.obj");
-	Model casaBrujas("resources/objects/Casa_brujas/Casa.obj");
-	//Model aquamanFull("resources/objects/Aquaman/Aquaman.obj");
-	Model aquamanCabeza("resources/objects/Aquaman/Cabeza.obj");
-	Model aquamanCuerpo("resources/objects/Aquaman/Cuerpo.obj");
-	Model aquamanBrazoDer("resources/objects/Aquaman/BrazoDerecho.obj");
-	Model aquamanBrazoIzq("resources/objects/Aquaman/BrazoIzquierdo.obj");
-	Model aquamanPiernaDer("resources/objects/Aquaman/PiernaDerecha.obj");
-	Model aquamanPiernaIzq("resources/objects/Aquaman/PiernaIzquierda.obj");
-	Model planoPapel("resources/objects/Papel/Plano_papel.obj");
-	Model cuboPapel("resources/objects/Papel/Cubo_papel.obj");
-	Model mesaFI("resources/objects/Mesa_FI/Mesa_FI.obj");
+	Model puente("resources/objects/Puente/Puente.obj");
 
-	// Modelo del Windmill descargado como actividad complementaria a la pr·ctica 4
+	// Modelo del Windmill descargado como actividad complementaria a la pr√°ctica 4
 	Model windMill("resources/objects/Windmill/Windmill_P4.obj");
 
 	ModelAnim animacionPersonaje("resources/objects/Personaje1/Arm.dae");
 	animacionPersonaje.initShaders(animShader.ID);
 
 
-	//InicializaciÛn de KeyFrames
+	//Inicializaci√≥n de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
 	{
 		KeyFrame[i].posX = 0;
@@ -686,7 +670,7 @@ int main() {
 
 		//Tener Piso como referencia
 		glBindVertexArray(VAO[2]);
-		//Colocar cÛdigo aquÌ
+		//Colocar c√≥digo aqu√≠
 		modelOp = glm::scale(glm::mat4(1.0f), glm::vec3(40.0f, 2.0f, 40.0f));
 		modelOp = glm::translate(modelOp, glm::vec3(0.0f, -1.0f, 0.0f));
 		modelOp = glm::rotate(modelOp, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -696,7 +680,7 @@ int main() {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(VAO[0]);
-		//Colocar cÛdigo aquÌ
+		//Colocar c√≥digo aqu√≠
 		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 		modelOp = glm::scale(modelOp, glm::vec3(5.0f, 5.0f, 1.0f));
 		myShader.setMat4("model", modelOp);
@@ -705,16 +689,7 @@ int main() {
 		//glDrawArrays(GL_TRIANGLES, 0, 36); //A lonely cube :(
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		/***   Segundo objeto  **/
-		/*
-		glBindVertexArray(VAO[1]);
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, 0.0f));
-		myShader.setMat4("model", modelOp);
-		myShader.setVec3("aColor", 1.0f, 1.0f, 1.0f);
-		glBindTexture(GL_TEXTURE_2D, t_unam);
-		glDrawArrays(GL_TRIANGLES, 0, 36); //A lonely cube :(
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		*/
+		
 		glBindVertexArray(0);
 		// ------------------------------------------------------------------------------------------------------------------------
 		// Termina Escenario Primitivas
@@ -727,199 +702,33 @@ int main() {
 		staticShader.setMat4("projection", projectionOp);
 		staticShader.setMat4("view", viewOp);
 
-		//Casa de las Brujas
-		modelOp = glm::translate(glm::mat4(5.5f), glm::vec3(30.0f, 0.0f, 40.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		casaBrujas.Draw(staticShader);
-
-		
-
-		//MODELO WINDMILL
-		//Tenemos arriba: Model windMill("resources/objects/Windmill/Windmill_P4.obj");
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(-75.0f, 0.0f, -50.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		windMill.Draw(staticShader);
-
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(250.0f, 0.0f, -10.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		casaDoll.Draw(staticShader);
+	
 
 		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.75f, 0.0f));
 		modelOp = glm::scale(modelOp, glm::vec3(0.2f));
 		staticShader.setMat4("model", modelOp);
-		//piso.Draw(staticShader);
+		piso.Draw(staticShader);
 
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -70.0f));
-		modelOp = glm::scale(modelOp, glm::vec3(5.0f));
-		staticShader.setMat4("model", modelOp);
-		staticShader.setVec3("dirLight.specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		casaVieja.Draw(staticShader);
+		
+		modelOp = glm::mat4(1.0f);
+		// Posicionar (Ajusta el segundo valor para la altura sobre los ladrillos)
+		modelOp = glm::translate(modelOp, glm::vec3(0.0f, 0.0f, 0.0f));
+		// Rotar (Si es necesario orientarlo)
+		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// ESCALAR (Modifica estos valores para que abarque la base de 40x40)
+		// Si el puente es peque√±o, prueba con valores como 5.0f o 10.0f
+		modelOp = glm::scale(modelOp, glm::vec3(7.0f, 7.0f, 7.0f));
 
-		// -------------------------------------------------------------------------------------------------------------------------
-		// Carro
-		// -------------------------------------------------------------------------------------------------------------------------
-		//modelOp = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(movAuto_x, -1.0f, movAuto_z - 15.0f));
-		tmp = modelOp = glm::rotate(modelOp, glm::radians(orienta), glm::vec3(0.0f, 1.0f, 0.0f));
-		modelOp = glm::scale(modelOp, glm::vec3(0.1f, 0.1f, 0.1f));
-		staticShader.setVec3("dirLight.specular", glm::vec3(0.6f, 0.6f, 0.6f));
 		staticShader.setMat4("model", modelOp);
-		carro.Draw(staticShader);
+		puente.Draw(staticShader);
 
-		modelOp = glm::translate(tmp, glm::vec3(8.5f, 2.5f, 12.9f));
-		modelOp = glm::scale(modelOp, glm::vec3(0.1f, 0.1f, 0.1f));
-		staticShader.setMat4("model", modelOp);
-		llanta.Draw(staticShader);	//Izq delantera
-
-		modelOp = glm::translate(tmp, glm::vec3(-8.5f, 2.5f, 12.9f));
-		modelOp = glm::scale(modelOp, glm::vec3(0.1f, 0.1f, 0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		llanta.Draw(staticShader);	//Der delantera
-
-		modelOp = glm::translate(tmp, glm::vec3(-8.5f, 2.5f, -14.5f));
-		modelOp = glm::scale(modelOp, glm::vec3(0.1f, 0.1f, 0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		llanta.Draw(staticShader);	//Der trasera
-
-		modelOp = glm::translate(tmp, glm::vec3(8.5f, 2.5f, -14.5f));
-		modelOp = glm::scale(modelOp, glm::vec3(0.1f, 0.1f, 0.1f));
-		staticShader.setMat4("model", modelOp);
-		llanta.Draw(staticShader);	//Izq trase
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Personaje
 		// -------------------------------------------------------------------------------------------------------------------------
-		
-		//MODELADO JERARQUICO. Usamos la lÛgica del modelado usado en la generaciÛn del Emoji. Un modelo puede tener una o m·s jerarquias
+
+		//MODELADO JERARQUICO. Usamos la l√≥gica del modelado usado en la generaci√≥n del Emoji. Un modelo puede tener una o m√°s jerarquias
 		// El elemento con mayor jerarquia es el cuerpo
-		 
-		//CUERPO DE AQUAMAN ----------------------------------------------------------------------------------------------------------------
-		// Generamos una matriz temporal al elemento de mayor jerarquia, en este caso el cuerpo, para despuÈs generar las transformaciones 
-		// de los elementos de menor jerarquia, en este caso la cabeza y los brazos, a partir de la matriz del cuerpo. De esta forma, si se
-		// mueve el cuerpo, la cabeza y los brazos se mover·n con Èl.
-		glm::mat4 tmpAquaman = glm::mat4(1.0f); //Va a guardar valores del cuerpo
 
-		//tenemos una traslacion y luego una rotacion. La rotacion le da una orientacion.
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(posX, posY, posZ));
-		tmpAquaman = modelOp = glm::rotate(modelOp, glm::radians(giroMonito), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanCuerpo.Draw(staticShader);
-
-		//CABEZA DE AQUAMAN
-		modelOp = glm::translate(tmpAquaman, glm::vec3(0.0f, 1.5f, 0.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(giroCabeza), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanCabeza.Draw(staticShader);
-		
-		//Brazo Derecho DE AQUAMAN
-		modelOp = glm::translate(tmpAquaman, glm::vec3(-0.75f, 1.5f, 0.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(giroBrazoDer), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanBrazoDer.Draw(staticShader);
-
-		//Brazo Izquierdo DE AQUAMAN
-		modelOp = glm::translate(tmpAquaman, glm::vec3(0.75f, 1.5f, 0.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(-giroBrazoDer), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanBrazoIzq.Draw(staticShader);
-		
-		
-		//Pierna Derecha DE AQUAMAN
-		modelOp = glm::translate(tmpAquaman, glm::vec3(-0.5f, 0.0f, -0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(giroPiernaDer), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanPiernaDer.Draw(staticShader);
-		
-		//Pierna Izquierda DE AQUAMAN
-		modelOp = glm::translate(tmpAquaman, glm::vec3(0.5f, 0.0f, -0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(-giroPiernaDer), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		aquamanPiernaIzq.Draw(staticShader);
-		
-
-
-		//PLANO PAPEL
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(25.0f, 5.0f, 0.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		planoPapel.Draw(staticShader);
-
-		//CUBO PAPEL
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Consume muchos recursos computacionales, hay que activarlo y desactivarlo, es solo para lo que necesitamos
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 5.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		cuboPapel.Draw(staticShader);
-		glDisable(GL_BLEND);
-		
-
-		//Mesa FI
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(-45.0f, 0.0f, 45.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		mesaFI.Draw(staticShader);
-
-		// -------------------------------------------------------------------------------------------------------------------------
-		// Just in case
-		// -------------------------------------------------------------------------------------------------------------------------
-		/*modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(posX, posY, posZ));
-		tmp = modelOp = glm::rotate(modelOp, glm::radians(giroMonito), glm::vec3(0.0f, 1.0f, 0.0));
-		staticShader.setMat4("model", modelOp);
-		torso.Draw(staticShader);
-
-		//Pierna Der
-		modelOp = glm::translate(tmp, glm::vec3(-0.5f, 0.0f, -0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-		modelOp = glm::rotate(modelOp, glm::radians(-rotRodIzq), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		piernaDer.Draw(staticShader);
-
-		//Pie Der
-		modelOp = glm::translate(modelOp, glm::vec3(0, -0.9f, -0.2f));
-		staticShader.setMat4("model", modelOp);
-		botaDer.Draw(staticShader);
-
-		//Pierna Izq
-		modelOp = glm::translate(tmp, glm::vec3(0.5f, 0.0f, -0.1f));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		piernaIzq.Draw(staticShader);
-
-		//Pie Iz
-		modelOp = glm::translate(modelOp, glm::vec3(0, -0.9f, -0.2f));
-		staticShader.setMat4("model", modelOp);
-		botaDer.Draw(staticShader);	//Izq trase
-
-		//Brazo derecho
-		modelOp = glm::translate(tmp, glm::vec3(0.0f, -1.0f, 0.0f));
-		modelOp = glm::translate(modelOp, glm::vec3(-0.75f, 2.5f, 0));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		brazoDer.Draw(staticShader);
-
-		//Brazo izquierdo
-		modelOp = glm::translate(tmp, glm::vec3(0.0f, -1.0f, 0.0f));
-		modelOp = glm::translate(modelOp, glm::vec3(0.75f, 2.5f, 0));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		brazoIzq.Draw(staticShader);
-
-		//Cabeza
-		modelOp = glm::translate(tmp, glm::vec3(0.0f, -1.0f, 0.0f));
-		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-		modelOp = glm::translate(modelOp, glm::vec3(0.0f, 2.5f, 0));
-		staticShader.setMat4("model", modelOp);
-		cabeza.Draw(staticShader);*/
-
-		//-------------------------------------------------------------------------------------
-		// draw skybox as last
-		// -------------------
-		skyboxShader.use();
-		skybox.Draw(skyboxShader, viewOp, projectionOp, camera);
 
 		// Limitar el framerate a 60
 		deltaTime = SDL_GetTicks() - lastFrame; // time for full 1 loop
@@ -928,7 +737,7 @@ int main() {
 			SDL_Delay((int)(LOOP_TIME - deltaTime));
 		}
 
-		
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
@@ -945,7 +754,7 @@ int main() {
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void my_input(GLFWwindow* window, int key, int scancode, int action, int mode) 
+void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -981,19 +790,19 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
 		lightPosition.x--;
 
-	//AnimaciÛn cabeza de Aquaman
+	//Animaci√≥n cabeza de Aquaman
 	if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS)
 		giroCabeza++;
 	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
 		giroCabeza--;
 
-	//AnimaciÛn brazo derecho de Aquaman
+	//Animaci√≥n brazo derecho de Aquaman
 	if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS)
 		giroBrazoDer++;
 	if (glfwGetKey(window, GLFW_KEY_F4) == GLFW_PRESS)
 		giroBrazoDer--;
 
-	//AnimaciÛn brazo derecho de Aquaman
+	//Animaci√≥n brazo derecho de Aquaman
 	if (glfwGetKey(window, GLFW_KEY_F5) == GLFW_PRESS)
 		giroPiernaDer++;
 	if (glfwGetKey(window, GLFW_KEY_F6) == GLFW_PRESS)
@@ -1048,7 +857,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 // glfw: whenever the mouse moves, this callback is called
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (firstMouse)
 	{
