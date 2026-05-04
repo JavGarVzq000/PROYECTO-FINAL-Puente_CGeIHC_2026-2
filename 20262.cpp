@@ -1,8 +1,11 @@
 /*---------------------------------------------------------*/
 /* ----------------   PROYECTO FINAL - CGeIHC --------------------------*/
-/*-----------------    2026-2   ---------------------------*/
-/*------------- Alumno: Garcia Vazquez Javier Alejandro   ---------------*/
+/*-----------------    2026-2   -------------------------------*/
+/*------------- Alumno: Garcia Vazquez Javier Alejandro   ---------*/
+/*------------- No. Cuenta: 319129793      -------------------*/
 /*------------- Alumno: Marin Montaño Josue   ---------------*/
+/*------------- No. Cuenta: 319235630    ---------------*/
+
 
 #include <Windows.h>
 
@@ -104,6 +107,23 @@ giroBrazoDer = 0.0f,
 giroBrazoIzq = 0.0f,
 giroPiernaDer = 0.0f,
 giroPiernaIzq = 0.0f;
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Rocket
+//-----------------------------------------------------------------------------------------------------
+int stateRocket = 0;
+float	turnRocket = 0.0f,
+turnBase = 0.0f,
+movRocket_x = 0.0f,
+movRocket_y = 0.0f,
+movRocket_z = 0.0f,
+movS1 = 0.0f,
+movS2 = 0.0f,
+movS3 = 0.0f;
+bool	aniRocket = false;
+
+
+
 
 float	incX = 0.0f,
 incY = 0.0f,
@@ -289,6 +309,7 @@ void animate(void)
 
 			i_curr_steps++;
 		}
+
 	}
 
 	//Vehículo
@@ -296,6 +317,57 @@ void animate(void)
 	{
 		movAuto_x += 3.0f;
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Rocket
+	//-----------------------------------------------------------------------------------------------------
+	if (aniRocket)
+	{
+		if (stateRocket == 1) { //Gira la base 150
+			turnBase += 0.35f;
+			if (turnBase > 150.0f) {
+				stateRocket = 2;
+			}
+		}
+		else if (stateRocket == 2) { //Abren los soportes
+			movS1 += 0.35;
+			movS2 += 0.35;
+			movS3 += 0.35;
+			if (movS1 > 20.0f && movS2 > 20.0f && movS3 > 20.0f) {
+				stateRocket = 3;
+			}
+		}
+		else if (stateRocket == 3) { // Despegue
+			movRocket_y += 0.4f;
+
+			// Genera una curva
+			if (movRocket_y > 30.0f) {
+				movRocket_z += (movRocket_y * 0.002f); //Acelera horizontalmente según sube
+			}
+			// Para generar una inclinacion gradual conforme sube
+			float ascent = glm::clamp(movRocket_y / 250.0f, 0.0f, 1.0f);
+
+			//El cohete se inclina suavemente
+			turnRocket = ascent * 60.0f;
+
+			if (movRocket_y > 250.0f) {
+				stateRocket = 4;
+			}
+		}
+		else if (stateRocket == 4) { // Descenso
+			movRocket_y -= 0.4f;
+			movRocket_z += 0.8f;
+
+			//El progreso es inverso a la altura
+			float descent = glm::clamp(movRocket_y / 250.0f, 0.0f, 1.0f);
+			turnRocket = descent * 60.0f;
+
+			if (movRocket_y < 0.0f) {
+				stateRocket = 0;
+			}
+		}
+	}
+
 }
 
 void getResolution() {
@@ -503,6 +575,16 @@ int main() {
 	ModelAnim animacionPersonaje("resources/objects/Personaje1/Arm.dae");
 	animacionPersonaje.initShaders(animShader.ID);
 
+	Model drone("resources/objects/Drone/Drone_v1.obj");
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Rocket
+	//-----------------------------------------------------------------------------------------------------
+	Model baseRocket("resources/objects/Rocket/Base.obj");
+	Model rocket("resources/objects/Rocket/Rocket.obj");
+	Model support1("resources/objects/Rocket/Support1.obj");
+	Model support2("resources/objects/Rocket/Support2.obj");
+	Model support3("resources/objects/Rocket/Support3.obj");
 
 	//Inicialización de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
@@ -723,12 +805,50 @@ int main() {
 		puente.Draw(staticShader);
 
 		// -------------------------------------------------------------------------------------------------------------------------
-		// Personaje
+		// DRONE
 		// -------------------------------------------------------------------------------------------------------------------------
+		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(-40.3f, 20.75f, 0.3f)); // translate it down so it's at the center of the scene
+		modelOp = glm::scale(modelOp, glm::vec3(0.2f));	// it's a bit too big for our scene, so scale it down
+		modelOp = glm::rotate(modelOp, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", modelOp);
+		drone.Draw(staticShader);
 
-		//MODELADO JERARQUICO. Usamos la lógica del modelado usado en la generación del Emoji. Un modelo puede tener una o más jerarquias
-		// El elemento con mayor jerarquia es el cuerpo
+		//-----------------------------------------------------------------------------------------------------
+		// PF - Rocket
+		//-----------------------------------------------------------------------------------------------------
+		//Scale global Rocket
+		float scaleRocket = 0.3f;
+		glm::vec3 vSRocket = glm::vec3(scaleRocket);
 
+		//BaseRocket
+		glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 55.0f));
+		modelBase = glm::rotate(modelBase, glm::radians(turnBase), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelBase, vSRocket));
+		baseRocket.Draw(staticShader);
+
+		//Support 1
+		glm::mat4 modelSupport1 = glm::translate(modelBase, glm::vec3(7.4f, 2.6f, -10.9f) * scaleRocket);
+		modelSupport1 = glm::rotate(modelSupport1, glm::radians(-movS1), glm::vec3(1.0f, 0.0f, 1.0f));
+		staticShader.setMat4("model", glm::scale(modelSupport1, vSRocket));
+		support1.Draw(staticShader);
+
+		//Support 2
+		glm::mat4 modelSupport2 = glm::translate(modelBase, glm::vec3(-13.0f, 2.7f, -0.9f) * scaleRocket);
+		modelSupport2 = glm::rotate(modelSupport2, glm::radians(movS2), glm::vec3(0.0f, 0.0f, 1.0f));
+		staticShader.setMat4("model", glm::scale(modelSupport2, vSRocket));
+		support2.Draw(staticShader);
+
+		//Support 3
+		glm::mat4 modelSupport3 = glm::translate(modelBase, glm::vec3(6.3f, 2.8f, 11.0f) * scaleRocket);
+		modelSupport3 = glm::rotate(modelSupport3, glm::radians(movS3), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelSupport3, vSRocket));
+		support3.Draw(staticShader);
+
+		//Rocket
+		glm::mat4 modelRocket = glm::translate(modelBase, glm::vec3(movRocket_x + 2.5f, movRocket_y + 29.5f, movRocket_z) * scaleRocket);
+		modelRocket = glm::rotate(modelRocket, glm::radians(turnRocket), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelRocket, vSRocket));
+		rocket.Draw(staticShader);
 
 		// Limitar el framerate a 60
 		deltaTime = SDL_GetTicks() - lastFrame; // time for full 1 loop
@@ -846,6 +966,30 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 			saveFrame();
 		}
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Rocket
+	//-----------------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+		aniRocket ^= true;
+		if (stateRocket == 0) {
+			stateRocket = 1;
+		}
+	}
+
+	if (key == GLFW_KEY_F10 && action == GLFW_PRESS) {
+		aniRocket = false;
+		stateRocket = 0;
+		turnRocket = 0.0f;
+		turnBase = 0.0f;
+		movRocket_x = 0.0f;
+		movRocket_y = 0.0f;
+		movRocket_z = 0.0f;
+		movS1 = 0.0f;
+		movS2 = 0.0f;
+		movS3 = 0.0f;
+	}
+
 
 }
 
