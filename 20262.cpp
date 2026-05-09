@@ -349,7 +349,11 @@ void animate(void)
 			movC1_x += 1.0f;
 			orientaC1 = 90.0f; // Giro de 90 grados sobre eje Y
 			if (movC1_x > -100.0f)
-				estadoC1_walking = 0;
+				estadoC1_walking = 4;
+		}if (estadoC1_walking == 4) {
+			movC1_x = -300.0f; // Reinicia la posición para repetir el ciclo
+			movC1_z = -135.0f;
+			estadoC1_walking = 1;
 		}
 	}
 
@@ -978,8 +982,11 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 	//Animación wey camminando C1_walking
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-		animacion ^= true;
-		estadoC1_walking = 1;
+		animacion =! animacion; // Cambia entre activar y desactivar la animación
+		if (animacion && estadoC1_walking == 0) {
+			estadoC1_walking = 1;
+		}
+		
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
