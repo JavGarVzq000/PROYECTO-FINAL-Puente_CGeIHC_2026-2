@@ -1,21 +1,23 @@
-/*---------------------------------------------------------*/
-/* ----------------   PROYECTO FINAL - CGeIHC --------------------------*/
-/*-----------------    2026-2   -------------------------------*/
-/*------------- Alumno: Garcia Vazquez Javier Alejandro   ---------*/
-/*------------- No. Cuenta: 319129793      -------------------*/
-/*------------- Alumno: Marin Montaño Josue   ---------------*/
-/*------------- No. Cuenta: 319235630    ---------------*/
+/*----------------------------------------------------------------------------*/
+/*-------------------------- PROYECTO FINAL - CGeIHC -------------------------*/
+/*----------------------------------- 2026-2 ---------------------------------*/
+/*------------------ Alumno: Garcia Vazquez Javier Alejandro -----------------*/
+/*------------------------ No. Cuenta: 319129793 -----------------------------*/
+/*------------------------ Alumno: Marin Montaño Josue -----------------------*/
+/*--------------------------- No. Cuenta: 319235630 --------------------------*/
+/*----------------------------------------------------------------------------*/
 
 
 #include <Windows.h>
 
 #include <glad/glad.h>
-#include <glfw3.h>						//main
+#include <glfw3.h>						// Main
 #include <stdlib.h>		
-#include <glm/glm.hpp>					//camera y model
-#include <glm/gtc/matrix_transform.hpp>	//camera y model
+#include <glm/glm.hpp>					// Camera y model
+#include <glm/gtc/matrix_transform.hpp>	// Camera y model
 #include <glm/gtc/type_ptr.hpp>
 #include <time.h>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>					//Texture
 
@@ -38,66 +40,60 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void my_input(GLFWwindow* window, int key, int scancode, int action, int mods);
 void animate(void);
 
-// settings
+// Settings
 unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
 GLFWmonitor* monitors;
 
 GLuint VBO[3], VAO[3], EBO[3];
 
-//Camera
+// Camera
 Camera camera(glm::vec3(0.0f, 2.0f, 20.0f));
 float MovementSpeed = 0.1f;
 GLfloat lastX = SCR_WIDTH / 2.0f,
 lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-//Timing
+// Timing
 const int FPS = 60;
 const int LOOP_TIME = 1000 / FPS; // = 16 milisec // 1000 millisec == 1 sec
 double	deltaTime = 0.0f,
 lastFrame = 0.0f;
 
 void getResolution(void);
-void myData(void);							// De la practica 4
-void LoadTextures(void);					// De la práctica 6
-unsigned int generateTextures(char*, bool, bool);	// De la práctica 6
+void myData(void);									// Practica 4
+void LoadTextures(void);							// Practica 6
+unsigned int generateTextures(char*, bool, bool);	// Practica 6
 
-//For Keyboard
+// For Keyboard
 float	movX = 0.0f,
 movY = 0.0f,
 movZ = -5.0f,
 rotX = 0.0f;
 
 //Texture
-unsigned int	t_smile,
-t_toalla,
-t_unam,
-t_white,
-t_ladrillos;
+unsigned int	t_white,
+				t_ladrillos;
 
-//Lighting
+// Lighting
 glm::vec3 lightPosition(0.0f, 4.0f, -10.0f);
 glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 
-//// Light
+// Light
 glm::vec3 lightColor = glm::vec3(0.7f);
 glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
 glm::vec3 ambientColor = diffuseColor * glm::vec3(0.75f);
 
-// posiciones
+//-----------------------------------------------------------------------------------------------------
+// PF - C1 Walking
+//-----------------------------------------------------------------------------------------------------
 int estadoC1_walking = 0;
 float	movAuto_x = 0.0f,
-movAuto_z = 0.0f,
-orienta = 90.0f;
-bool	animacion = false,
-recorrido1 = true,
-recorrido2 = false,
-recorrido3 = false,
-recorrido4 = false;
+		movAuto_z = 0.0f,
+		orienta = 90.0f;
+bool	animacion = false;
 
-
-//Keyframes (Manipulación y dibujo)
+// Keyframes (Manipulación y dibujo)
 float	posX = 0.0f,
 posY = 0.0f,
 posZ = 0.0f,
@@ -110,34 +106,90 @@ giroPiernaDer = 0.0f,
 giroPiernaIzq = 0.0f;
 
 //-----------------------------------------------------------------------------------------------------
-// PF - Rocket
-//-----------------------------------------------------------------------------------------------------
-int stateRocket = 0;
-float	turnRocket = 0.0f,
-turnBase = 0.0f,
-movRocket_x = 0.0f,
-movRocket_y = 0.0f,
-movRocket_z = 0.0f,
-movS1 = 0.0f,
-movS2 = 0.0f,
-movS3 = 0.0f;
-bool	aniRocket = false;
-
-//-----------------------------------------------------------------------------------------------------
 // Personaje de Fondo - C1 Walking
 //-----------------------------------------------------------------------------------------------------
-float movC1_x = -300.0f,
-	movC1_y = 58.0f,
-	movC1_z = -135.0f;
+float	movC1_x = -280.0f,
+		movC1_y = 55.7f,
+		movC1_z = -135.0f;
 float orientaC1 = 90.0f; // Ángulo inicial del personaje
 
 //-----------------------------------------------------------------------------------------------------
 // Personaje de Fondo - C6 Fist Fight A
 //-----------------------------------------------------------------------------------------------------
-float movC6_x = -245.0f,
-movC6_y = 0.0f,
-movC6_z = -50.0f;
+float	movC6_x = -245.0f,
+		movC6_y = 0.0f,
+		movC6_z = -50.0f;
 float orientaC6 = 90.0f; // Ángulo inicial del personaje
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Robotic Arm
+//-----------------------------------------------------------------------------------------------------
+int stateArm = 0;
+float	turnBody = 180.0f,
+		movBody_x = -120.0f,
+		movBody_y = 55.7f,
+		movBody_z = 110.0f,
+		movUpper_y = 0.0f,
+		movFore_y = 0.0f,
+		movHandU_y = 0.0f,
+		movHandL_y = 0.0f;
+bool	aniRobotic = false;
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Rocket
+//-----------------------------------------------------------------------------------------------------
+int stateRocket = 0;
+float	turnRocket = 0.0f,
+		turnBase = 0.0f,
+		movRocket_x = 0.0f,
+		movRocket_y = 0.0f,
+		movRocket_z = 0.0f,
+		movS1 = 0.0f,
+		movS2 = 0.0f,
+		movS3 = 0.0f;
+bool	aniRocket = false;
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Paper
+//-----------------------------------------------------------------------------------------------------
+int statePaper = 0;
+float	turnP_x = 0.0f,
+		turnP_y = 0.0f,
+		turnP_z = 0.0f,
+		movP_x = -20.0f,
+		movP_y = 9.0f,
+		movP_z = 3.0f,
+		movWL = 0.0f,
+		movWR = 0.0f;
+bool	aniPaper = false;
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Robot Star
+//-----------------------------------------------------------------------------------------------------
+int stateRobotS = 0;
+float	turnRS_x = 0.0f,
+		turnRS_y = 0.0f,
+		turnRS_z = 0.0f,
+		movRS_x = -40.0f,
+		movRS_z = 3.0f,
+		movHRS = 0.0f;
+bool	aniRS = false;
+
+
+//-----------------------------------------------------------------------------------------------------
+// PF - Robot Duck
+//-----------------------------------------------------------------------------------------------------
+int stateDuck = 0;
+float	turnBodyDuck = 0.0f,
+		movBD_x = 80.0f,
+		movBD_y = 1.0f,
+		movBD_z = 100.0f,
+		movLegL_y = 0.0f,
+		movLegR_y = 0.0f,
+		movHeadD_y = 0.0f,
+		movLowerD_y = 0.0f,
+		movTailD_y = 0.0f;
+bool	aniDuck = false;
 
 
 float	incX = 0.0f,
@@ -172,8 +224,8 @@ typedef struct _frame
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 0;			//introducir número en caso de tener Key guardados
-//int FrameIndex = 3;			//Si ya tenemos frames guardados, introducimos el número de frames que tenemos para seguir guardando a partir de ahí. En este caso, como ya tengo 3 frames guardados, introduzco el número 3 para seguir guardando a partir de ahí.
+int FrameIndex = 0;			// Introducir número en caso de tener Key guardados
+//int FrameIndex = 3;		//Si ya tenemos frames guardados, introducimos el número de frames que tenemos para seguir guardando a partir de ahí. En este caso, como ya tengo 3 frames guardados, introduzco el número 3 para seguir guardando a partir de ahí.
 bool play = false;
 int playIndex = 0;
 
@@ -273,15 +325,11 @@ unsigned int generateTextures(const char* filename, bool alfa, bool isPrimitive)
 	stbi_image_free(data);
 }
 
-void LoadTextures()
-{
-
-	t_smile = generateTextures("Texturas/awesomeface.png", 1, true);
-	t_toalla = generateTextures("Texturas/toalla.tga", 0, true);
-	t_unam = generateTextures("Texturas/escudo_unam.jpg", 0, true);
+void LoadTextures(){
 	t_ladrillos = generateTextures("Texturas/bricks.jpg", 0, true);
 	//This must be the last
 	t_white = generateTextures("Texturas/white.jpg", 0, false);
+
 }
 
 
@@ -335,8 +383,8 @@ void animate(void)
 		
 		if (estadoC1_walking == 1) // Retrocede hasta -200 en x
 		{
-			movC1_x += 1.0f;
-			if (movC1_x > -130.0f)
+			movC1_x += 0.6f;
+			if (movC1_x > -110.0f)
 				estadoC1_walking = 2;
 		}if (estadoC1_walking == 2) // Retrocede hasta -200 en x
 		{
@@ -346,14 +394,99 @@ void animate(void)
 				estadoC1_walking = 3;
 		}if (estadoC1_walking == 3) // Retrocede hasta -200 en x
 		{
-			movC1_x += 1.0f;
+			movC1_x += 0.6f;
 			orientaC1 = 90.0f; // Giro de 90 grados sobre eje Y
 			if (movC1_x > -100.0f)
 				estadoC1_walking = 4;
 		}if (estadoC1_walking == 4) {
-			movC1_x = -300.0f; // Reinicia la posición para repetir el ciclo
+			movC1_x = -280.0f; // Reinicia la posición para repetir el ciclo
 			movC1_z = -135.0f;
 			estadoC1_walking = 1;
+		}
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robotic Arm
+	//-----------------------------------------------------------------------------------------------------
+	if (aniRobotic)
+	{
+		if (stateArm == 1) { //Avanza frente
+			movBody_z -= 0.3f;
+			if (movBody_z <= 55.0f) {
+				stateArm = 2;
+			}
+		}
+		else if (stateArm == 2) { //Gira
+			turnBody -= 0.35f;
+			if (turnBody <= 90.0f) {
+				stateArm = 3;
+			}
+		}
+		else if (stateArm == 3) { //Avanza frente
+			movBody_x -= 0.3f;
+			if (movBody_x <= -3.0f) {
+				stateArm = 4;
+			}
+		}
+		else if (stateArm == 4) { //Gira 160
+			turnBody += 0.35f;
+			if (turnBody > 160.0f) {
+				stateArm = 5;
+			}
+		}
+		else if (stateArm == 5) { //Baja el brazo
+			movUpper_y += 0.35f;
+			if (movUpper_y > 50.0f) {
+				stateArm = 6;
+			}
+		}
+		else if (stateArm == 6) { //Sube el antebrazo
+			movFore_y += 0.35f;
+			if (movFore_y > 40.0f) {
+				stateArm = 7;
+			}
+		}
+		else if (stateArm == 7) { //Baja mano superior
+			movHandU_y += 0.35f;
+			if (movHandU_y > 13.0f) {
+				stateArm = 8;
+			}
+		}
+		else if (stateArm == 8) { //Sube mano inferior
+			movHandL_y += 0.35f;
+			if (movHandL_y > 13.0f) {
+				stateArm = 9;
+			}
+		}
+		else if (stateArm == 9) { //Sube mano superior
+			movHandU_y -= 0.35f;
+			if (movHandU_y < -11.0f) {
+				stateArm = 10;
+			}
+		}
+		else if (stateArm == 10) { //Baja mano inferior
+			movHandL_y -= 0.35f;
+			if (movHandL_y < -11.0f) {
+				stateArm = 11;
+			}
+		}
+		else if (stateArm == 11) { //Baja el antebrazo
+			movFore_y -= 0.35f;
+			if (movFore_y < -30.0f) {
+				stateArm = 12;
+			}
+		}
+		else if (stateArm == 12) { //Sube el brazo
+			movUpper_y -= 0.35f;
+			if (movUpper_y < -40.0f) {
+				stateArm = 13;
+			}
+		}
+		else if (stateArm == 13) { //Gira 200
+			turnBody += 0.35f;
+			if (turnBody > 200.0f) {
+				stateArm = 0;
+			}
 		}
 	}
 
@@ -407,6 +540,185 @@ void animate(void)
 		}
 	}
 
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Paper
+	//-----------------------------------------------------------------------------------------------------
+	static float timePaper = 0.0f;
+	if (aniPaper)
+	{
+		if (statePaper > 0 && statePaper < 3) { //Permite el aleteo
+			timePaper += 0.015f;
+			movWL = sin(timePaper * 10.0f) * 20.0f;
+			movWR = movWL;
+		}
+
+		if (statePaper == 1) { //Lanzamiento suave
+			movP_z += 0.25f;
+			movP_y += 0.08f;
+			if (turnP_x > -15.0f) {
+				turnP_x -= 0.2f;
+			}
+			if (movP_y > 35.0f) {
+				statePaper = 2;
+			}
+		}
+
+		else if (statePaper == 2) { //Vuela y gira
+			turnP_y += 0.4f;
+			if (turnP_z < 15.0f) {
+				turnP_z += 0.2f;
+			}
+			if (turnP_x < 5.0f) {
+				turnP_x += 0.2f;
+			}
+
+			// Hace el giro
+			movP_z += cos(glm::radians(turnP_y)) * 0.25f;
+			movP_x += sin(glm::radians(turnP_y)) * 0.25f;
+			movP_y -= 0.015f;
+
+			if (turnP_y > 180.0f) {
+				statePaper = 3;
+			}
+		}
+
+		else if (statePaper == 3) { //Descenso
+			if (turnP_z > 0.0f) {
+				turnP_z -= 0.5f;
+			}
+			if (turnP_x < 8.0f) {
+				turnP_x += 0.2f; // Inclinación final
+			}
+
+			//Hace el giro
+			movP_z += cos(glm::radians(turnP_y)) * 0.15f;
+			movP_x += sin(glm::radians(turnP_y)) * 0.15f;
+			movP_y -= 0.08f;
+
+			// Si turnP_x es positivo (nariz abajo), necesitamos detenernos ANTES de y=0.
+			float alturaMinima = 1.5f;
+
+			if (movP_y <= alturaMinima) {
+				movP_y = alturaMinima;
+				statePaper = 4;
+			}
+		}
+
+		else if (statePaper == 4) {//Mantiene la rotación sin enterrarse 
+			movWL = 0.0f;
+			movWR = 0.0f;
+			statePaper = 0;
+		}
+
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Star
+	//-----------------------------------------------------------------------------------------------------
+	if (aniRS)
+	{
+		float speedRoll = 7.0f; // Velocidad de rodado
+		if (stateRobotS == 1) { // Avanza 100 al frente
+			movRS_z += 0.5f;
+			turnRS_x += speedRoll; // El cuerpo rueda sobre el eje X
+			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
+			if (movRS_z >= 100.0f) {
+				stateRobotS = 2;
+			}
+		}
+		else if (stateRobotS == 2) { // Avanza 20 a la derecha
+			movRS_x += 0.5f;
+			turnRS_z -= speedRoll; // El cuerpo rueda sobre el eje Z
+			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
+			if (movRS_x >= 20.0f) {
+				stateRobotS = 3;
+			}
+		}
+		else if (stateRobotS == 3) { // Avanza 25 hacia atras
+			movRS_z -= 0.5f;
+			turnRS_x -= speedRoll; // Rueda hacia atras (eje X invertido)
+			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
+			if (movRS_z <= 75.0f) {
+				stateRobotS = 4;
+			}
+		}
+		else if (stateRobotS == 4) { // Avanza 20 a la izquierda
+			movRS_x -= 0.5f;
+			turnRS_z += speedRoll; // Rueda hacia la izquierda (eje Z invertido)
+			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
+			if (movRS_x <= 0.0f) {
+				stateRobotS = 0;
+			}
+		}
+	}
+
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Duck
+	//-----------------------------------------------------------------------------------------------------
+	if (aniDuck)
+	{
+		float walkCycle = sin(glfwGetTime() * 5.0f); // Animacion de patas, cola y pico
+
+		// Solo mueve sus piezas cuando esta caminando (Estados impares)
+		if (stateDuck == 1 || stateDuck == 3 || stateDuck == 5 || stateDuck == 7) {
+			movLegL_y = walkCycle * 20.0f;
+			movLegR_y = -walkCycle * 20.0f;
+			movTailD_y = walkCycle * 15.0f;
+			movLowerD_y = abs(walkCycle) * 15.0f; // El pico se mueve mientras camina
+			movHeadD_y = sin(glfwGetTime() * 2.0f) * 10.0f;
+		}
+		else {
+			// En los estados de giro (pares), las patas se quedan quietas
+			movLegL_y = 0.0f;
+			movLegR_y = 0.0f;
+			movLowerD_y = 0.0f;
+		}
+
+		if (stateDuck == 1) { // Avanza al frente
+			movBD_z += 0.3f;
+			if (movBD_z > 145.0f) {
+				stateDuck = 2;
+			}
+		}
+		else if (stateDuck == 2) { // Gira 
+			turnBodyDuck += 1.5f;
+			if (turnBodyDuck >= 90.0f) {
+				stateDuck = 3;
+			}
+		}
+		else if (stateDuck == 3) { // Avanza
+			movBD_x += 0.3f;
+			if (movBD_x > 115.0f) {
+				stateDuck = 4;
+			}
+		}
+		else if (stateDuck == 4) { // Gira
+			turnBodyDuck += 1.5f;
+			if (turnBodyDuck >= 180.0f) {
+				stateDuck = 5;
+			}
+		}
+		else if (stateDuck == 5) { // Avanza
+			movBD_z -= 0.3f;
+			if (movBD_z < 110.0f) {
+				stateDuck = 6;
+			}
+		}
+		else if (stateDuck == 6) { // Gira
+			turnBodyDuck += 1.5f;
+			if (turnBodyDuck >= 270.0f) {
+				stateDuck = 7;
+			}
+		}
+		else if (stateDuck == 7) { // Avanza y termina
+			movBD_x -= 0.3f;
+			if (movBD_x <= 85.0f) {
+				stateDuck = 0;
+			}
+		}
+	}
+
 }
 
 void getResolution() {
@@ -415,19 +727,8 @@ void getResolution() {
 	SCR_HEIGHT = (mode->height) - 80;
 }
 
-void myData() {
-	float vertices[] = {
-		// positions          // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
-		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
-	};
-	unsigned int indices[] = {
-		0, 1, 3, // first triangle
-		1, 2, 3  // second triangle
-	};
-
+void myData() 
+{
 	float verticesPiso[] = {
 		// positions          // texture coords
 		 10.5f,  10.5f, 0.0f,   4.0f, 4.0f, // top right
@@ -440,61 +741,9 @@ void myData() {
 		1, 2, 3  // second triangle
 	};
 
-	GLfloat verticesCubo[] = {
-		//Position				//texture coords
-		-0.5f, -0.5f, 0.5f,		0.0f, 0.0f,	//V0 - Frontal
-		0.5f, -0.5f, 0.5f,		1.0f, 0.0f,	//V1
-		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,	//V5
-		-0.5f, -0.5f, 0.5f,		0.0f, 0.0f,	//V0
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V4
-		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,	//V5
-
-		0.5f, -0.5f, -0.5f,		0.0f, 0.0f,	//V2 - Trasera
-		-0.5f, -0.5f, -0.5f,	1.0f, 0.0f,	//V3
-		-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,	//V7
-		0.5f, -0.5f, -0.5f,		0.0f, 0.0f,	//V2
-		0.5f, 0.5f, -0.5f,		0.0f, 1.0f,	//V6
-		-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,	//V7
-
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V4 - Izq
-		-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,	//V7
-		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,	//V3
-		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,	//V3
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V4
-		-0.5f, -0.5f, 0.5f,		0.0f, 1.0f,	//V0
-
-		0.5f, 0.5f, 0.5f,		1.0f, 0.0f,	//V5 - Der
-		0.5f, -0.5f, 0.5f,		1.0f, 0.0f,	//V1
-		0.5f, -0.5f, -0.5f,		1.0f, 0.0f,	//V2
-		0.5f, 0.5f, 0.5f,		1.0f, 0.0f,	//V5
-		0.5f, 0.5f, -0.5f,		1.0f, 0.0f,	//V6
-		0.5f, -0.5f, -0.5f,		1.0f, 0.0f,	//V2
-
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V4 - Sup
-		0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V5
-		0.5f, 0.5f, -0.5f,		0.0f, 1.0f,	//V6
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,	//V4
-		-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,	//V7
-		0.5f, 0.5f, -0.5f,		0.0f, 1.0f,	//V6
-
-		-0.5f, -0.5f, 0.5f,		1.0f, 1.0f,	//V0 - Inf
-		-0.5f, -0.5f, -0.5f,	1.0f, 1.0f,	//V3
-		0.5f, -0.5f, -0.5f,		1.0f, 1.0f,	//V2
-		-0.5f, -0.5f, 0.5f,		1.0f, 1.0f,	//V0
-		0.5f, -0.5f, -0.5f,		1.0f, 1.0f,	//V2
-		0.5f, -0.5f, 0.5f,		1.0f, 1.0f,	//V1
-	};
-
 	glGenVertexArrays(3, VAO);
 	glGenBuffers(3, VBO);
 	glGenBuffers(3, EBO);
-
-	glBindVertexArray(VAO[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -517,15 +766,6 @@ void myData() {
 	// texture coord attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-
-	//PARA CUBO
-	glBindVertexArray(VAO[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCubo), verticesCubo, GL_STATIC_DRAW);
-
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
 
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -611,10 +851,6 @@ int main() {
 	// Modelo del Windmill descargado como actividad complementaria a la práctica 4
 	Model windMill("resources/objects/Windmill/Windmill_P4.obj");
 
-	ModelAnim animacionPersonaje("resources/objects/Personaje1/Arm.dae");
-	animacionPersonaje.initShaders(animShader.ID);
-
-
 	//-----------------------------------------------------------------------------------------------------
 	// Personajes de fondo
 	//-----------------------------------------------------------------------------------------------------
@@ -628,10 +864,14 @@ int main() {
 	ModelAnim C7_Backflip("resources/objects/PersonajesFondo/C7_Backflip/C7_Backflip.dae");
 	C7_Backflip.initShaders(animShader.ID);
 
-
-
-
-	Model drone("resources/objects/Drone/Drone_v1.obj");
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robotic Arm
+	//-----------------------------------------------------------------------------------------------------
+	Model bodyArm("resources/objects/RoboticArm/BodyArm.obj");
+	Model upperArm("resources/objects/RoboticArm/UpperArm.obj");
+	Model foreArm("resources/objects/RoboticArm/ForeArm.obj");
+	Model handUpper("resources/objects/RoboticArm/HandUpper.obj");
+	Model handLow("resources/objects/RoboticArm/HandLow.obj");
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Rocket
@@ -641,6 +881,29 @@ int main() {
 	Model support1("resources/objects/Rocket/Support1.obj");
 	Model support2("resources/objects/Rocket/Support2.obj");
 	Model support3("resources/objects/Rocket/Support3.obj");
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Paper
+	//-----------------------------------------------------------------------------------------------------
+	Model bodyPaper("resources/objects/Paper/BodyPaper.obj");
+	Model leftWing("resources/objects/Paper/LeftWing.obj");
+	Model rightWing("resources/objects/Paper/RightWing.obj");
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Star
+	//-----------------------------------------------------------------------------------------------------
+	Model bodyRobotS("resources/objects/RobotStar/BodyStar.obj");
+	Model headRobotS("resources/objects/RobotStar/HeadStar.obj");
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Duck
+	//-----------------------------------------------------------------------------------------------------
+	Model bodyDuck("resources/objects/Duck/BodyDuck.obj");
+	Model headDuck("resources/objects/Duck/HeadDuck.obj");
+	Model legLDuck("resources/objects/Duck/LegLeft.obj");
+	Model legRDuck("resources/objects/Duck/LegRight.obj");
+	Model lowerDuck("resources/objects/Duck/LowerDuck.obj");
+	Model tailDuck("resources/objects/Duck/tailDuck.obj");
 
 	//Inicialización de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
@@ -788,18 +1051,12 @@ int main() {
 		animShader.setVec3("light.direction", lightDirection);
 		animShader.setVec3("viewPos", camera.Position);
 
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(-40.3f, 1.75f, 0.3f)); // translate it down so it's at the center of the scene
-		modelOp = glm::scale(modelOp, glm::vec3(0.05f));	// it's a bit too big for our scene, so scale it down
-		modelOp = glm::rotate(modelOp, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		animShader.setMat4("model", modelOp);
-		animacionPersonaje.Draw(animShader);
-
 		// -------------------------------------------------------------------------------------------------------------------------
 		// C1 wey caminando en linea recta
 		// -------------------------------------------------------------------------------------------------------------------------
 		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(movC1_x, movC1_y, movC1_z));
 		modelOp = glm::rotate(modelOp, glm::radians(orientaC1), glm::vec3(0.0f, 1.0f, 0.0f)); // Aplicamos el giro
-		modelOp = glm::scale(modelOp, glm::vec3(0.07f));	// it's a bit too big for our scene, so scale it down
+		modelOp = glm::scale(modelOp, glm::vec3(0.08f));	// it's a bit too big for our scene, so scale it down
 		animShader.setMat4("model", modelOp);
 		C1_Walking.Draw(animShader);
 
@@ -832,14 +1089,7 @@ int main() {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(VAO[0]);
-		//Colocar código aquí
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		modelOp = glm::scale(modelOp, glm::vec3(5.0f, 5.0f, 1.0f));
-		myShader.setMat4("model", modelOp);
-		myShader.setVec3("aColor", 1.0f, 1.0f, 1.0f);
-		glBindTexture(GL_TEXTURE_2D, t_unam);
-		//glDrawArrays(GL_TRIANGLES, 0, 36); //A lonely cube :(
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 		
 		glBindVertexArray(0);
@@ -864,30 +1114,59 @@ int main() {
 		
 		modelOp = glm::mat4(1.0f);
 		// Posicionar (Ajusta el segundo valor para la altura sobre los ladrillos)
-		modelOp = glm::translate(modelOp, glm::vec3(0.0f, 0.0f, 0.0f));
+		modelOp = glm::translate(modelOp, glm::vec3(0.0f, 55.9f, 0.0f));
 		// Rotar (Si es necesario orientarlo)
 		modelOp = glm::rotate(modelOp, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		// ESCALAR (Modifica estos valores para que abarque la base de 40x40)
 		// Si el puente es pequeño, prueba con valores como 5.0f o 10.0f
-		modelOp = glm::scale(modelOp, glm::vec3(7.0f, 7.0f, 7.0f));
+		modelOp = glm::scale(modelOp, glm::vec3(6.2f, 6.2f, 6.2f));
 
 		staticShader.setMat4("model", modelOp);
 		puente.Draw(staticShader);
 
-		// -------------------------------------------------------------------------------------------------------------------------
-		// DRONE
-		// -------------------------------------------------------------------------------------------------------------------------
-		modelOp = glm::translate(glm::mat4(1.0f), glm::vec3(-40.3f, 20.75f, 0.3f)); // translate it down so it's at the center of the scene
-		modelOp = glm::scale(modelOp, glm::vec3(0.2f));	// it's a bit too big for our scene, so scale it down
-		modelOp = glm::rotate(modelOp, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		staticShader.setMat4("model", modelOp);
-		drone.Draw(staticShader);
+		//-----------------------------------------------------------------------------------------------------
+		// PF - Robotic Arm
+		//-----------------------------------------------------------------------------------------------------
+		//Scale global Robotic Arm
+		float scaleRobotic = 0.1f;
+		glm::vec3 vSR = glm::vec3(scaleRobotic);
+
+		//BodyArm
+		glm::mat4 modelBody = glm::translate(glm::mat4(1.0f), glm::vec3(movBody_x, movBody_y, movBody_z));
+		modelBody = glm::rotate(modelBody, glm::radians(turnBody), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelBody, vSR));
+		bodyArm.Draw(staticShader);
+
+		//UpperArm
+		glm::mat4 modelUpper = glm::translate(modelBody, glm::vec3(-0.285f, 23.83f, 13.5f) * scaleRobotic);
+		modelUpper = glm::rotate(modelUpper, glm::radians(movUpper_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelUpper, vSR));
+		upperArm.Draw(staticShader);
+
+		//ForeArm
+		//modelOp = glm::translate(tmpRoboticArm, glm::vec3(-0.085f, 39.648f, 31.1f));
+		glm::mat4 modelFore = glm::translate(modelUpper, glm::vec3(0.185f, 15.6f, 17.6f) * scaleRobotic);
+		modelFore = glm::rotate(modelFore, glm::radians(-movFore_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelFore, vSR));
+		foreArm.Draw(staticShader);
+
+		//HandUpper
+		glm::mat4 modelHandUp = glm::translate(modelFore, glm::vec3(0.05f, -7.95f, 14.1f) * scaleRobotic);
+		modelHandUp = glm::rotate(modelHandUp, glm::radians(movHandU_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelHandUp, vSR));
+		handUpper.Draw(staticShader);
+
+		//HandLow
+		glm::mat4 modelHandLow = modelOp = glm::translate(modelFore, glm::vec3(0.05f, -8.1f, 15.2f) * scaleRobotic);
+		modelHandLow = glm::rotate(modelHandLow, glm::radians(-movHandL_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelHandLow, vSR));
+		handLow.Draw(staticShader);
 
 		//-----------------------------------------------------------------------------------------------------
 		// PF - Rocket
 		//-----------------------------------------------------------------------------------------------------
 		//Scale global Rocket
-		float scaleRocket = 0.3f;
+		float scaleRocket = 0.2f;
 		glm::vec3 vSRocket = glm::vec3(scaleRocket);
 
 		//BaseRocket
@@ -919,6 +1198,100 @@ int main() {
 		modelRocket = glm::rotate(modelRocket, glm::radians(turnRocket), glm::vec3(1.0f, 0.0f, 0.0f));
 		staticShader.setMat4("model", glm::scale(modelRocket, vSRocket));
 		rocket.Draw(staticShader);
+
+
+		//-----------------------------------------------------------------------------------------------------
+		// PF - Paper
+		//-----------------------------------------------------------------------------------------------------
+		//Scale global Paper
+		float scalePaper = 0.2f;
+		glm::vec3 vSP = glm::vec3(scalePaper);
+
+		//Body Paper
+		glm::mat4 modelBodyPaper = glm::translate(glm::mat4(1.0f), glm::vec3(movP_x, movP_y, movP_z));
+		modelBodyPaper = glm::rotate(modelBodyPaper, glm::radians(turnP_x), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelBodyPaper = glm::rotate(modelBodyPaper, glm::radians(turnP_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelBodyPaper = glm::rotate(modelBodyPaper, glm::radians(turnP_z), glm::vec3(1.0f, 0.0f, 1.0f));
+		staticShader.setMat4("model", glm::scale(modelBodyPaper, vSP));
+		bodyPaper.Draw(staticShader);
+
+		//Left Wing
+		glm::mat4 modelWL = glm::translate(modelBodyPaper, glm::vec3(-1.0f, 0.0f, 0.0f) * scalePaper);
+		modelWL = glm::rotate(modelWL, glm::radians(movWL), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelWL, vSP));
+		leftWing.Draw(staticShader);
+
+		//Right Wing
+		glm::mat4 modelWR = glm::translate(modelBodyPaper, glm::vec3(1.0f, 0.0f, 0.0f) * scalePaper);
+		modelWR = glm::rotate(modelWR, glm::radians(movWR), glm::vec3(-1.305f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelWR, vSP));
+		rightWing.Draw(staticShader);
+
+		//-----------------------------------------------------------------------------------------------------
+		// PF - Robot Star
+		//-----------------------------------------------------------------------------------------------------
+		//Scale global Robot Star
+		float scaleRS = 0.2f;
+		glm::vec3 vSRS = glm::vec3(scaleRS);
+
+		//Body Robot
+		glm::mat4 modelBodyRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 3.0f, movRS_z));
+		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_x), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_z), glm::vec3(1.0f, 0.0f, 1.0f));
+		staticShader.setMat4("model", glm::scale(modelBodyRS, vSRS));
+		bodyRobotS.Draw(staticShader);
+
+		//Head Robot
+		glm::mat4 modelHeadRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 9.0f, movRS_z));
+		modelHeadRS = glm::rotate(modelHeadRS, glm::radians(movHRS), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelHeadRS, vSRS));
+		headRobotS.Draw(staticShader);
+
+		/*
+		//-----------------------------------------------------------------------------------------------------
+		// PF - Robot Duck
+		//-----------------------------------------------------------------------------------------------------
+		//Scale global Duck
+		float scaleDuck = 0.07f;
+		glm::vec3 vSDuck = glm::vec3(scaleDuck);
+
+		//Body Duck
+		glm::mat4 modelBodyDuck = glm::translate(glm::mat4(1.0f), glm::vec3(movBD_x, movBD_y, movBD_z));
+		modelBodyDuck = glm::rotate(modelBodyDuck, glm::radians(turnBodyDuck), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelBodyDuck, vSDuck));
+		bodyDuck.Draw(staticShader);
+
+		//Head Duck
+		glm::mat4 modelHeadDuck = glm::translate(modelBodyDuck, glm::vec3(0.0f, 21.0f, 6.0f) * scaleDuck);
+		modelHeadDuck = glm::rotate(modelHeadDuck, glm::radians(movHeadD_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelHeadDuck, vSDuck));
+		headDuck.Draw(staticShader);
+
+		//Lower Duck
+		glm::mat4 modelLowerDuck = glm::translate(modelHeadDuck, glm::vec3(0.0f, 0.0f, -1.0f) * scaleDuck);
+		modelLowerDuck = glm::rotate(modelLowerDuck, glm::radians(movLowerD_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelLowerDuck, vSDuck));
+		lowerDuck.Draw(staticShader);
+
+		//Leg Left
+		glm::mat4 modelLegL = glm::translate(modelBodyDuck, glm::vec3(6.0f, -28.0f, 0.0f) * scaleDuck);
+		modelLegL = glm::rotate(modelLegL, glm::radians(movLegL_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelLegL, vSDuck));
+		legLDuck.Draw(staticShader);
+
+		//Leg Right
+		glm::mat4 modelLegR = glm::translate(modelBodyDuck, glm::vec3(-6.0f, -28.0f, 0.0f) * scaleDuck);
+		modelLegR = glm::rotate(modelLegR, glm::radians(movLegR_y), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelLegR, vSDuck));
+		legRDuck.Draw(staticShader);
+
+		//Tail Duck
+		glm::mat4 modelTailD = glm::translate(modelBodyDuck, glm::vec3(0.0f, -8.0f, -15.0f) * scaleDuck);
+		modelTailD = glm::rotate(modelTailD, glm::radians(movTailD_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		staticShader.setMat4("model", glm::scale(modelTailD, vSDuck));
+		tailDuck.Draw(staticShader);*/
+
 
 		// Limitar el framerate a 60
 		deltaTime = SDL_GetTicks() - lastFrame; // time for full 1 loop
@@ -1034,6 +1407,29 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	}
 
 	//-----------------------------------------------------------------------------------------------------
+	// PF - Robotic Arm
+	//-----------------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		aniRobotic ^= true;
+		if (stateArm == 0) {
+			stateArm = 1;
+		}
+	}
+
+	if (key == GLFW_KEY_F9 && action == GLFW_PRESS) {
+		aniRobotic = false;
+		stateArm = 0;
+		turnBody = 0.0f;
+		movBody_x = 0.0f;
+		movBody_y = 0.0f;
+		movBody_z = 0.0f;
+		movUpper_y = 0.0f;
+		movFore_y = 0.0f;
+		movHandU_y = 0.0f;
+		movHandL_y = 0.0f;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
 	// PF - Rocket
 	//-----------------------------------------------------------------------------------------------------
 	if (key == GLFW_KEY_O && action == GLFW_PRESS) {
@@ -1054,6 +1450,72 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		movS1 = 0.0f;
 		movS2 = 0.0f;
 		movS3 = 0.0f;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Paper
+	//-----------------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+		aniPaper ^= true;
+		if (statePaper == 0) {
+			statePaper = 1;
+		}
+	}
+
+	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+		aniPaper = false;
+		statePaper = 0;
+		turnP_x = 0.0f;
+		turnP_y = 0.0f;
+		turnP_z = 0.0f;
+		movP_x = -20.0f;
+		movP_y = 9.0f;
+		movP_z = 3.0f;
+		movWL = 0.0f;
+		movWR = 0.0f;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Star
+	//-----------------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_U && action == GLFW_PRESS) {
+		aniRS ^= true;
+		if (stateRobotS == 0) {
+			stateRobotS = 1;
+		}
+	}
+
+	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+		aniRS = false;
+		turnRS_x = 0.0f;
+		turnRS_y = 0.0f;
+		turnRS_z = 0.0f;
+		movRS_x = -40.0f;
+		movRS_z = 3.0f;
+		movHRS = 0.0f;
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// PF - Robot Duck
+	//-----------------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+		aniDuck ^= true;
+		if (stateDuck == 0) {
+			stateDuck = 1;
+		}
+	}
+
+	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+		aniDuck = false;
+		turnBodyDuck = 0.0f;
+		movBD_x = 80.0f;
+		movBD_y = 1.0f;
+		movBD_z = 100.0f;
+		movLegL_y = 0.0f;
+		movLegR_y = 0.0f;
+		movHeadD_y = 0.0f;
+		movLowerD_y = 0.0f;
+		movTailD_y = 0.0f;
 	}
 
 
