@@ -30,7 +30,8 @@
 #include <model.h>
 #include <Skybox.h>
 #include <iostream>
-#include <mmsystem.h>
+#include <mmsystem.h> // Incluye las funciones multimedia de Windows
+#pragma comment(lib, "winmm.lib") // Conecta automaticamente la libreria de audio de Windows
 
 
 
@@ -934,6 +935,18 @@ int main() {
 	myData();
 	glEnable(GL_DEPTH_TEST);
 
+	//-------------------------------------------------------------------------------
+	// MUSICA
+	//-------------------------------------------------------------------------------
+	// Reproduce el archivo de audio ubicado en resources
+	// TEXT() convierte el texto a formato compatible con Windows
+	// NULL indica que se usará el dispositivo de audio predeterminado
+	// SND_ASYNC permite reproducir la música en segundo plano
+	// SND_LOOP hace que la música se repita infinitamente
+	PlaySound(TEXT("resources/Fondo.wav"),
+		NULL,
+		SND_ASYNC | SND_LOOP);
+
 
 
 	// build and compile shaders
@@ -1453,6 +1466,11 @@ int main() {
 	glDeleteVertexArrays(2, VAO);
 	glDeleteBuffers(2, VBO);
 	//skybox.Terminate();
+
+	// Detiene cualquier sonido que se este reproduciendo
+	// NULL indica que no se reproducira ningun archivo
+	PlaySound(NULL, 0, 0); 
+	
 	glfwTerminate();
 	return 0;
 }
@@ -1461,9 +1479,11 @@ int main() {
 // ---------------------------------------------------------------------------------------------------------
 void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
+	// Cierra la ventana con la tecla ESC
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
+	// Moviento de la camara 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -1472,6 +1492,35 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		camera.ProcessKeyboard(LEFT, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, (float)deltaTime);
+
+	// Teclas para la posicion de las camaras
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		// Tecla numero 1. Puerta principal
+		case GLFW_KEY_1:
+			camera.Position = glm::vec3(0.0f, 72.0f, -188.0f);
+			camera.Yaw = -180.0f;
+			camera.Pitch = 0.0f;
+			camera.ProcessMouseMovement(0, 0);
+			break;
+
+		// Tecla numero 2. Cerca del elemento con animación (Cohete)
+		case GLFW_KEY_2:
+			camera.Position = glm::vec3(-112.0, 68.0f, 192.0);
+			camera.Yaw = -180.0f;
+			camera.Pitch = 0.0f;
+			camera.ProcessMouseMovement(0, 0);
+			break;
+
+		// Tecla numero 3. Cerca del elemento con gran detalle
+		case GLFW_KEY_3:
+			camera.Position = glm::vec3(-112.0f, 64.0f, 110.0f);
+			camera.Yaw = -180.0f;
+			camera.Pitch = 0.0f;
+			camera.ProcessMouseMovement(0, 0);
+			break;
+		}
+	}
 
 	//To Configure Model
 	/*if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
