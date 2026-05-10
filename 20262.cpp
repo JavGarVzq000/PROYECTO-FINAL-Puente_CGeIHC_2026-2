@@ -227,8 +227,8 @@ float velocidadY_palomaTriste = 0.7f; // Velocidad de impulso inicial
 int estadoSpaceship = 0;
 float movSpaceship_x = 800.0f,
 		movSpaceship_y = 400.0f,
-		movSpaceship_z = 0.0f;
-float orientaSpaceship = 0.0f; // Ángulo inicial del Spaceship
+		movSpaceship_z = 100.0f;
+float orientaSpaceship = -90.0f; // Ángulo inicial del Spaceship
 bool aniSpaceship = false;
 
 float	incX = 0.0f,
@@ -528,19 +528,29 @@ void animate(void)
 	//-----------------------------------------------------------------------------------------------------
 	if (aniSpaceship) {
 		if (estadoSpaceship == 1) {
-			movSpaceship_x -= 0.7f; // Llega a la fi
-			movSpaceship_y -= 0.3f; // Desciende un poco mientras avanza
+			movSpaceship_x -= 1.7f; // Llega a la fi
+			movSpaceship_y -= 0.7f; // Desciende un poco mientras avanza
 			if (movSpaceship_x <= 0.0f) {
 				movSpaceship_x = 0.0f;
-				estadoSpaceship = 2; // Cambia al siguiente estado para iniciar el descenso
+				estadoSpaceship = 2; // Cambia al siguiente estado para iniciar el ascenso
 			}
 		}if (estadoSpaceship == 2) {
-			movSpaceship_y += 0.5f; // Asciende y se va 
-			movSpaceship_x -= 0.9f; // Avanza un poco mientras asciende
-			if (movSpaceship_y >= 650.0f) {
-				movSpaceship_y = 650.0f;
+			movSpaceship_y += 1.5f; // Asciende y se va 
+			movSpaceship_x -= 1.9f; // Avanza un poco mientras asciende
+			if (movSpaceship_y >= 450.0f) {
+				movSpaceship_y = 450.0f;
+				estadoSpaceship = 3; // Cambia al siguiente estado para reiniciar la posición
+			}
+		}if (estadoSpaceship == 3) {
+			movSpaceship_x -= 10.0f; // Avanza asi bien rapidisimo
+			if (movSpaceship_x <= -1550.0f) {
+				movSpaceship_x = -1550.0f;
 				estadoSpaceship = 0; // Cambia al siguiente estado para reiniciar la posición
 			}
+		}if (estadoSpaceship == 0) {
+			movSpaceship_x = 800.0f; // Reinicia la posición para repetir el ciclo
+			movSpaceship_y = 400.0f; // Reinicia la altura para el siguiente vuelo
+			movSpaceship_z = 100.0f; // Reinicia la posición para repetir el ciclo
 		}
 
 	}
@@ -1067,7 +1077,7 @@ int main() {
 	//-----------------------------------------------------------------------------------------------------
 	// SpaceShip
 	//-----------------------------------------------------------------------------------------------------
-	Model spaceship("resources/objects/Spaceship/Spaceship.obj");
+	Model spaceship("resources/objects/Starfury/Starfury.obj");
 
 
 	//-----------------------------------------------------------------------------------------------------
@@ -1367,7 +1377,7 @@ int main() {
 		modelOp = glm::mat4(1.0f);
 		modelOp = glm::translate(modelOp, glm::vec3(movSpaceship_x, movSpaceship_y, movSpaceship_z));
 		modelOp = glm::rotate(modelOp, glm::radians(orientaSpaceship), glm::vec3(0.0f, 1.0f, 0.0f)); // Aplicamos el giro
-		modelOp = glm::scale(modelOp, glm::vec3(0.01f));
+		modelOp = glm::scale(modelOp, glm::vec3(0.0008f));
 		//glActiveTexture(GL_TEXTURE0); // Asegura que la textura se cargue en la unidad 0
 		//staticShader.setInt("texture_diffuse1", 0); // Informa al shader
 		staticShader.setMat4("model", modelOp);
