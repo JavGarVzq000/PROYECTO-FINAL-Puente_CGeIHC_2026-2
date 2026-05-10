@@ -156,9 +156,9 @@ int statePaper = 0;
 float	turnP_x = 0.0f,
 		turnP_y = 0.0f,
 		turnP_z = 0.0f,
-		movP_x = -20.0f,
-		movP_y = 9.0f,
-		movP_z = 3.0f,
+		movP_x = -125.5f,
+		movP_y = 63.8f,
+		movP_z = -82.0f,
 		movWL = 0.0f,
 		movWR = 0.0f;
 bool	aniPaper = false;
@@ -170,8 +170,8 @@ int stateRobotS = 0;
 float	turnRS_x = 0.0f,
 		turnRS_y = 0.0f,
 		turnRS_z = 0.0f,
-		movRS_x = -40.0f,
-		movRS_z = 3.0f,
+		movRS_x = -107.0f,
+		movRS_z = -65.0f,
 		movHRS = 0.0f;
 bool	aniRS = false;
 
@@ -408,84 +408,100 @@ void animate(void)
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robotic Arm
 	//-----------------------------------------------------------------------------------------------------
+	static float timeArm = 0.0f;
 	if (aniRobotic)
 	{
 		if (stateArm == 1) { //Avanza frente
-			movBody_z -= 0.3f;
+			movBody_z -= 0.2f;
 			if (movBody_z <= 55.0f) {
 				stateArm = 2;
 			}
 		}
 		else if (stateArm == 2) { //Gira
-			turnBody -= 0.35f;
+			turnBody -= 0.25f;
 			if (turnBody <= 90.0f) {
 				stateArm = 3;
 			}
 		}
 		else if (stateArm == 3) { //Avanza frente
-			movBody_x -= 0.3f;
-			if (movBody_x <= -3.0f) {
+			movBody_x += 0.2f;
+			if (movBody_x  >= -115.0f) {
 				stateArm = 4;
 			}
 		}
 		else if (stateArm == 4) { //Gira 160
-			turnBody += 0.35f;
-			if (turnBody > 160.0f) {
+			turnBody += 0.25f;
+			if (turnBody >= 160.0f) {
 				stateArm = 5;
 			}
 		}
 		else if (stateArm == 5) { //Baja el brazo
-			movUpper_y += 0.35f;
-			if (movUpper_y > 50.0f) {
+			movUpper_y += 0.25f;
+			if (movUpper_y >= 45.0f) {
 				stateArm = 6;
 			}
 		}
 		else if (stateArm == 6) { //Sube el antebrazo
-			movFore_y += 0.35f;
-			if (movFore_y > 40.0f) {
+			movFore_y += 0.25f;
+			if (movFore_y >= 40.0f) {
 				stateArm = 7;
 			}
 		}
 		else if (stateArm == 7) { //Baja mano superior
-			movHandU_y += 0.35f;
-			if (movHandU_y > 13.0f) {
+			movHandU_y += 0.25f;
+			if (movHandU_y >= 11.0f) {
 				stateArm = 8;
 			}
 		}
 		else if (stateArm == 8) { //Sube mano inferior
-			movHandL_y += 0.35f;
-			if (movHandL_y > 13.0f) {
+			movHandL_y += 0.25f;
+			if (movHandL_y >= 13.0f) {
 				stateArm = 9;
 			}
 		}
 		else if (stateArm == 9) { //Sube mano superior
-			movHandU_y -= 0.35f;
-			if (movHandU_y < -11.0f) {
+			movHandU_y -= 0.25f;
+			if (movHandU_y <= -11.0f) {
 				stateArm = 10;
 			}
 		}
 		else if (stateArm == 10) { //Baja mano inferior
-			movHandL_y -= 0.35f;
-			if (movHandL_y < -11.0f) {
+			movHandL_y -= 0.25f;
+			if (movHandL_y <= -10.0f) {
 				stateArm = 11;
 			}
 		}
 		else if (stateArm == 11) { //Baja el antebrazo
-			movFore_y -= 0.35f;
-			if (movFore_y < -30.0f) {
+			movFore_y -= 0.25f;
+			if (movFore_y <= -28.0f) {
 				stateArm = 12;
 			}
 		}
 		else if (stateArm == 12) { //Sube el brazo
-			movUpper_y -= 0.35f;
-			if (movUpper_y < -40.0f) {
+			movUpper_y -= 0.25f;
+			if (movUpper_y <= -40.0f) {
 				stateArm = 13;
 			}
 		}
 		else if (stateArm == 13) { //Gira 200
-			turnBody += 0.35f;
-			if (turnBody > 200.0f) {
-				stateArm = 0;
+			turnBody += 0.25f;
+			if (turnBody >= 200.0f) {
+				stateArm = 14;
+			}
+		}
+		else if (stateArm == 14) {
+			timeArm += 0.3f;
+			if (timeArm >= 4.8f) {
+				turnBody = 180.0f;
+				movBody_x = -120.0f;
+				movBody_y = 55.7f;
+				movBody_z = 110.0f;
+				movUpper_y = 0.0f;
+				movFore_y = 0.0f;
+				movHandU_y = 0.0f;
+				movHandL_y = 0.0f;
+				timeArm = 0.0f;
+				stateArm = 1;
 			}
 		}
 	}
@@ -493,11 +509,12 @@ void animate(void)
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Rocket
 	//-----------------------------------------------------------------------------------------------------
+	static float timeRocket = 0.0f;
 	if (aniRocket)
 	{
 		if (stateRocket == 1) { //Gira la base 150
 			turnBase += 0.35f;
-			if (turnBase > 150.0f) {
+			if (turnBase >= 150.0f) {
 				stateRocket = 2;
 			}
 		}
@@ -505,7 +522,7 @@ void animate(void)
 			movS1 += 0.35;
 			movS2 += 0.35;
 			movS3 += 0.35;
-			if (movS1 > 20.0f && movS2 > 20.0f && movS3 > 20.0f) {
+			if (movS1 >= 20.0f && movS2 >= 20.0f && movS3 > 20.0f) {
 				stateRocket = 3;
 			}
 		}
@@ -513,7 +530,7 @@ void animate(void)
 			movRocket_y += 0.4f;
 
 			// Genera una curva
-			if (movRocket_y > 30.0f) {
+			if (movRocket_y >= 30.0f) {
 				movRocket_z += (movRocket_y * 0.002f); //Acelera horizontalmente según sube
 			}
 			// Para generar una inclinacion gradual conforme sube
@@ -522,7 +539,7 @@ void animate(void)
 			//El cohete se inclina suavemente
 			turnRocket = ascent * 60.0f;
 
-			if (movRocket_y > 250.0f) {
+			if (movRocket_y >= 250.0f) {
 				stateRocket = 4;
 			}
 		}
@@ -534,8 +551,23 @@ void animate(void)
 			float descent = glm::clamp(movRocket_y / 250.0f, 0.0f, 1.0f);
 			turnRocket = descent * 60.0f;
 
-			if (movRocket_y < 0.0f) {
-				stateRocket = 0;
+			if (movRocket_y <= 0.0f) {
+				stateRocket = 5;
+			}
+		}
+		else if (stateRocket == 5) {
+			timeRocket += 0.3f;
+			if (timeRocket >= 4.8f) {
+				turnRocket = 0.0f;
+				turnBase = 0.0f;
+				movRocket_x = 0.0f;
+				movRocket_y = 0.0f;
+				movRocket_z = 0.0f;
+				movS1 = 0.0f;
+				movS2 = 0.0f;
+				movS3 = 0.0f;
+				timeRocket = 0.0f;
+				stateRocket = 1;
 			}
 		}
 	}
@@ -544,6 +576,7 @@ void animate(void)
 	// PF - Paper
 	//-----------------------------------------------------------------------------------------------------
 	static float timePaper = 0.0f;
+	static float timePaper1 = 0.0f;
 	if (aniPaper)
 	{
 		if (statePaper > 0 && statePaper < 3) { //Permite el aleteo
@@ -558,13 +591,13 @@ void animate(void)
 			if (turnP_x > -15.0f) {
 				turnP_x -= 0.2f;
 			}
-			if (movP_y > 35.0f) {
+			if (movP_y > 92.2f) {
 				statePaper = 2;
 			}
 		}
 
 		else if (statePaper == 2) { //Vuela y gira
-			turnP_y += 0.4f;
+			turnP_y += 1.2f;
 			if (turnP_z < 15.0f) {
 				turnP_z += 0.2f;
 			}
@@ -573,8 +606,8 @@ void animate(void)
 			}
 
 			// Hace el giro
-			movP_z += cos(glm::radians(turnP_y)) * 0.25f;
-			movP_x += sin(glm::radians(turnP_y)) * 0.25f;
+			movP_z += cos(glm::radians(turnP_y)) * 0.18f;
+			movP_x += sin(glm::radians(turnP_y)) * 0.18f;
 			movP_y -= 0.015f;
 
 			if (turnP_y > 180.0f) {
@@ -594,9 +627,7 @@ void animate(void)
 			movP_z += cos(glm::radians(turnP_y)) * 0.15f;
 			movP_x += sin(glm::radians(turnP_y)) * 0.15f;
 			movP_y -= 0.08f;
-
-			// Si turnP_x es positivo (nariz abajo), necesitamos detenernos ANTES de y=0.
-			float alturaMinima = 1.5f;
+			float alturaMinima = 57.2f;
 
 			if (movP_y <= alturaMinima) {
 				movP_y = alturaMinima;
@@ -604,55 +635,70 @@ void animate(void)
 			}
 		}
 
-		else if (statePaper == 4) {//Mantiene la rotación sin enterrarse 
-			movWL = 0.0f;
-			movWR = 0.0f;
-			statePaper = 0;
+		else if (statePaper == 4) {
+			timePaper1 += 0.3f;
+			if (timePaper1 >= 9.6f) {
+				turnP_x = 0.0f;
+				turnP_y = 0.0f;
+				turnP_z = 0.0f;
+				movP_x = -125.5f;
+				movP_y = 63.8f;
+				movP_z = -82.0f;
+				movWL = 0.0f;
+				movWR = 0.0f;
+				timePaper1 = 0.0f;
+				statePaper = 1;
+			}
 		}
-
 	}
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robot Star
 	//-----------------------------------------------------------------------------------------------------
+	static float timeRobot = 0.0f;
 	if (aniRS)
 	{
-		float speedRoll = 7.0f; // Velocidad de rodado
-		if (stateRobotS == 1) { // Avanza 100 al frente
+		float speedRoll = 4.0f; // Velocidad de rodado
+		if (stateRobotS == 1) { 
 			movRS_z += 0.5f;
 			turnRS_x += speedRoll; // El cuerpo rueda sobre el eje X
 			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
-			if (movRS_z >= 100.0f) {
+			if (movRS_z >= 20.0f) {
 				stateRobotS = 2;
 			}
 		}
-		else if (stateRobotS == 2) { // Avanza 20 a la derecha
+		else if (stateRobotS == 2) {
 			movRS_x += 0.5f;
 			turnRS_z -= speedRoll; // El cuerpo rueda sobre el eje Z
 			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
-			if (movRS_x >= 20.0f) {
+			if (movRS_x >= -95.0f) {
 				stateRobotS = 3;
 			}
 		}
-		else if (stateRobotS == 3) { // Avanza 25 hacia atras
+		else if (stateRobotS == 3) {
 			movRS_z -= 0.5f;
 			turnRS_x -= speedRoll; // Rueda hacia atras (eje X invertido)
 			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
-			if (movRS_z <= 75.0f) {
+			if (movRS_z <= 5.0f) {
 				stateRobotS = 4;
 			}
 		}
-		else if (stateRobotS == 4) { // Avanza 20 a la izquierda
-			movRS_x -= 0.5f;
-			turnRS_z += speedRoll; // Rueda hacia la izquierda (eje Z invertido)
-			movHRS = sin(glfwGetTime() * 1.2) * 360.0f; // Gira la cabeza 360 grados
-			if (movRS_x <= 0.0f) {
-				stateRobotS = 0;
+		else if (stateRobotS == 4) {
+			timeRobot += 0.3f;
+			if (timeRobot >= 9.6f) {
+				turnRS_x = 0.0f;
+				turnRS_y = 0.0f;
+				turnRS_z = 0.0f;
+				movRS_x = -107.0f;
+				movRS_z = -65.0f;
+				movHRS = 0.0f;
+				timeRobot = 0.0f;
+				stateRobotS = 1;
 			}
 		}
 	}
 
-
+	/*
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robot Duck
 	//-----------------------------------------------------------------------------------------------------
@@ -717,7 +763,7 @@ void animate(void)
 				stateDuck = 0;
 			}
 		}
-	}
+	}*/
 
 }
 
@@ -1166,11 +1212,11 @@ int main() {
 		// PF - Rocket
 		//-----------------------------------------------------------------------------------------------------
 		//Scale global Rocket
-		float scaleRocket = 0.2f;
+		float scaleRocket = 0.1f;
 		glm::vec3 vSRocket = glm::vec3(scaleRocket);
 
 		//BaseRocket
-		glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 55.0f));
+		glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(-127.3f, 63.0f, 192.0f));
 		modelBase = glm::rotate(modelBase, glm::radians(turnBase), glm::vec3(0.0f, 1.0f, 0.0f));
 		staticShader.setMat4("model", glm::scale(modelBase, vSRocket));
 		baseRocket.Draw(staticShader);
@@ -1204,7 +1250,7 @@ int main() {
 		// PF - Paper
 		//-----------------------------------------------------------------------------------------------------
 		//Scale global Paper
-		float scalePaper = 0.2f;
+		float scalePaper = 0.1f;
 		glm::vec3 vSP = glm::vec3(scalePaper);
 
 		//Body Paper
@@ -1231,11 +1277,11 @@ int main() {
 		// PF - Robot Star
 		//-----------------------------------------------------------------------------------------------------
 		//Scale global Robot Star
-		float scaleRS = 0.2f;
+		float scaleRS = 0.25f;
 		glm::vec3 vSRS = glm::vec3(scaleRS);
 
 		//Body Robot
-		glm::mat4 modelBodyRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 3.0f, movRS_z));
+		glm::mat4 modelBodyRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 58.0f, movRS_z));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_x), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_y), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_z), glm::vec3(1.0f, 0.0f, 1.0f));
@@ -1243,7 +1289,7 @@ int main() {
 		bodyRobotS.Draw(staticShader);
 
 		//Head Robot
-		glm::mat4 modelHeadRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 9.0f, movRS_z));
+		glm::mat4 modelHeadRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 61.1f, movRS_z));
 		modelHeadRS = glm::rotate(modelHeadRS, glm::radians(movHRS), glm::vec3(0.0f, 1.0f, 0.0f));
 		staticShader.setMat4("model", glm::scale(modelHeadRS, vSRS));
 		headRobotS.Draw(staticShader);
@@ -1363,7 +1409,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-		//Animación wey camminando C1_walking RESET
+		//Animación wey caminando C1_walking RESET
 		animacion ^= true;
 		estadoC1_walking = 0;
 		movC1_x = -300.0f;
@@ -1372,9 +1418,6 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 	}
 
-	//Car animation
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-		animacion ^= true;
 
 	//To play KeyFrame animation 
 	if (key == GLFW_KEY_P && action == GLFW_PRESS)
@@ -1409,20 +1452,19 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robotic Arm
 	//-----------------------------------------------------------------------------------------------------
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		aniRobotic ^= true;
 		if (stateArm == 0) {
 			stateArm = 1;
 		}
 	}
 
-	if (key == GLFW_KEY_F9 && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
 		aniRobotic = false;
-		stateArm = 0;
-		turnBody = 0.0f;
-		movBody_x = 0.0f;
-		movBody_y = 0.0f;
-		movBody_z = 0.0f;
+		turnBody = 180.0f;
+		movBody_x = -120.0f;
+		movBody_y = 55.7f;
+		movBody_z = 110.0f;
 		movUpper_y = 0.0f;
 		movFore_y = 0.0f;
 		movHandU_y = 0.0f;
@@ -1439,7 +1481,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		}
 	}
 
-	if (key == GLFW_KEY_F10 && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_F2 && action == GLFW_PRESS) {
 		aniRocket = false;
 		stateRocket = 0;
 		turnRocket = 0.0f;
@@ -1455,22 +1497,21 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Paper
 	//-----------------------------------------------------------------------------------------------------
-	if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_I && action == GLFW_PRESS) {
 		aniPaper ^= true;
 		if (statePaper == 0) {
 			statePaper = 1;
 		}
 	}
 
-	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
 		aniPaper = false;
-		statePaper = 0;
 		turnP_x = 0.0f;
 		turnP_y = 0.0f;
 		turnP_z = 0.0f;
-		movP_x = -20.0f;
-		movP_y = 9.0f;
-		movP_z = 3.0f;
+		movP_x = -125.5f;
+		movP_y = 63.8f;
+		movP_z = -82.0f;
 		movWL = 0.0f;
 		movWR = 0.0f;
 	}
@@ -1485,27 +1526,27 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		}
 	}
 
-	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_F4 && action == GLFW_PRESS) {
 		aniRS = false;
 		turnRS_x = 0.0f;
 		turnRS_y = 0.0f;
 		turnRS_z = 0.0f;
-		movRS_x = -40.0f;
-		movRS_z = 3.0f;
+		movRS_x = -107.0f;
+		movRS_z = -65.0f;
 		movHRS = 0.0f;
 	}
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robot Duck
 	//-----------------------------------------------------------------------------------------------------
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
 		aniDuck ^= true;
 		if (stateDuck == 0) {
 			stateDuck = 1;
 		}
 	}
 
-	if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
 		aniDuck = false;
 		turnBodyDuck = 0.0f;
 		movBD_x = 80.0f;
