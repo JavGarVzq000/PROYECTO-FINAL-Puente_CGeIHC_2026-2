@@ -30,7 +30,7 @@
 #include <model.h>
 #include <Skybox.h>
 #include <iostream>
-#include <mmsystem.h> // Incluye las funciones multimedia de Windows
+#include <mmsystem.h>
 #pragma comment(lib, "winmm.lib") // Conecta automaticamente la libreria de audio de Windows
 
 
@@ -198,15 +198,38 @@ bool	aniDuck = false;
 // Paloma Chida
 //-------------------------------------------------------------------------------------
 int estadoPalomaChida = 0;
-float movPalomaChida_x = -200.0f, 
-		movPalomaChida_y = 56.0f, 
-		movPalomaChida_z = -130.0f;
+float movPalomaChida_x = -200.0f,
+	movPalomaChida_y = 56.0f,
+	movPalomaChida_z = -130.0f;
 float orientaPalomaChida = 0.0f; // Ángulo inicial de la paloma
 bool aniPalomaChida = false;
 // para los saltos
 float velocidadY = 1.0f; // Velocidad de impulso inicial
 float gravedad = 0.01f;  // Lo que la empuja hacia abajo cada frame
 
+
+//-------------------------------------------------------------------------------------
+// Paloma Triste
+//-------------------------------------------------------------------------------------
+int estadoPalomaTriste = 0;
+float movPalomaTriste_x = -70.0f,
+	movPalomaTriste_y = 61.3f,
+	movPalomaTriste_z = -117.0f;
+float orientaPalomaTriste = 90.0f; // Ángulo inicial de la paloma
+bool aniPalomaTriste = false;
+// para su ultimo salto
+float velocidadY_palomaTriste = 0.7f; // Velocidad de impulso inicial
+
+
+//-------------------------------------------------------------------------------------
+// Spaceship
+//-------------------------------------------------------------------------------------
+int estadoSpaceship = 0;
+float movSpaceship_x = 800.0f,
+		movSpaceship_y = 400.0f,
+		movSpaceship_z = 0.0f;
+float orientaSpaceship = 0.0f; // Ángulo inicial del Spaceship
+bool aniSpaceship = false;
 
 float	incX = 0.0f,
 incY = 0.0f,
@@ -475,6 +498,52 @@ void animate(void)
 		}
 	}
 
+
+	//-----------------------------------------------------------------------------------------------------
+	// Paloma Triste
+	//-----------------------------------------------------------------------------------------------------
+	if (aniPalomaTriste) {
+		if (estadoPalomaTriste == 1) // Salta hacia adelante
+		{
+			movPalomaTriste_z += 0.3f;    // Avance constante en z
+			movPalomaTriste_y += velocidadY_palomaTriste;
+			velocidadY_palomaTriste -= gravedad; // La gravedad va frenando el ascenso
+
+			if (movPalomaTriste_y <= 0.0f) { // Cae al suelo (jardin)
+				movPalomaTriste_y = 0.0f;
+				estadoPalomaTriste = 0;
+			}
+		}if (estadoPalomaTriste == 0) {
+			movPalomaTriste_y = 61.3f; // Reinicia la altura para el siguiente salto
+			movPalomaTriste_x = -70.0f; // Reinicia la posición para repetir el ciclo
+			movPalomaTriste_z = -117.0f;
+			velocidadY_palomaTriste = 0.3f; // Reiniciamos el impulso para el siguiente salto
+			estadoPalomaTriste = 0; // Reseteamos el estado para repetir el salto
+			velocidadY_palomaTriste = 1.0f; // Reiniciamos el impulso para el siguiente salto
+		}
+	}
+
+	//-----------------------------------------------------------------------------------------------------
+	// Spaceship
+	//-----------------------------------------------------------------------------------------------------
+	if (aniSpaceship) {
+		if (estadoSpaceship == 1) {
+			movSpaceship_x -= 0.7f; // Llega a la fi
+			movSpaceship_y -= 0.3f; // Desciende un poco mientras avanza
+			if (movSpaceship_x <= 0.0f) {
+				movSpaceship_x = 0.0f;
+				estadoSpaceship = 2; // Cambia al siguiente estado para iniciar el descenso
+			}
+		}if (estadoSpaceship == 2) {
+			movSpaceship_y += 0.5f; // Asciende y se va 
+			movSpaceship_x -= 0.9f; // Avanza un poco mientras asciende
+			if (movSpaceship_y >= 650.0f) {
+				movSpaceship_y = 650.0f;
+				estadoSpaceship = 0; // Cambia al siguiente estado para reiniciar la posición
+			}
+		}
+
+	}
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robotic Arm
@@ -947,8 +1016,6 @@ int main() {
 		NULL,
 		SND_ASYNC | SND_LOOP);
 
-
-
 	// build and compile shaders
 	// -------------------------
 	Shader myShader("shaders/shader_texture_color.vs", "shaders/shader_texture_color.fs"); //To use with primitives
@@ -995,7 +1062,13 @@ int main() {
 	Model palomaChida("resources/objects/PalomaChida/PalomaChida.obj");
 
 	// Paloma Triste
-	//Model palomaTriste("resources/objects/PalomaChida/PalomaChida.obj");
+	Model palomaTriste("resources/objects/PalomaChida/PalomaChida.obj");
+	
+	//-----------------------------------------------------------------------------------------------------
+	// SpaceShip
+	//-----------------------------------------------------------------------------------------------------
+	Model spaceship("resources/objects/Spaceship/Spaceship.obj");
+
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robotic Arm
@@ -1279,6 +1352,28 @@ int main() {
 		staticShader.setMat4("model", modelOp);
 		palomaChida.Draw(staticShader);
 
+		// Paloma Triste
+		//--------------------------------------------------------------------------------------------------------------------------
+		modelOp = glm::mat4(1.0f);
+		modelOp = glm::translate(modelOp, glm::vec3(movPalomaTriste_x, movPalomaTriste_y, movPalomaTriste_z));
+		modelOp = glm::rotate(modelOp, glm::radians(orientaPalomaTriste), glm::vec3(0.0f, 1.0f, 0.0f)); // Aplicamos el giro
+		modelOp = glm::scale(modelOp, glm::vec3(1.5f));
+		staticShader.setMat4("model", modelOp);
+		palomaTriste.Draw(staticShader);
+
+		//-----------------------------------------------------------------------------------------------------
+		// Spaceship
+		//-----------------------------------------------------------------------------------------------------
+		modelOp = glm::mat4(1.0f);
+		modelOp = glm::translate(modelOp, glm::vec3(movSpaceship_x, movSpaceship_y, movSpaceship_z));
+		modelOp = glm::rotate(modelOp, glm::radians(orientaSpaceship), glm::vec3(0.0f, 1.0f, 0.0f)); // Aplicamos el giro
+		modelOp = glm::scale(modelOp, glm::vec3(0.01f));
+		//glActiveTexture(GL_TEXTURE0); // Asegura que la textura se cargue en la unidad 0
+		//staticShader.setInt("texture_diffuse1", 0); // Informa al shader
+		staticShader.setMat4("model", modelOp);
+		spaceship.Draw(staticShader);
+		
+
 		//-----------------------------------------------------------------------------------------------------
 		// PF - Robotic Arm
 		//-----------------------------------------------------------------------------------------------------
@@ -1469,8 +1564,8 @@ int main() {
 
 	// Detiene cualquier sonido que se este reproduciendo
 	// NULL indica que no se reproducira ningun archivo
-	PlaySound(NULL, 0, 0); 
-	
+	PlaySound(NULL, 0, 0);
+
 	glfwTerminate();
 	return 0;
 }
@@ -1483,7 +1578,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	// Moviento de la camara 
+	// TECLAS DE CAMARA EN MOVIMIENTO W,A,S,D ------------------------------------------------------
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -1492,11 +1587,12 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		camera.ProcessKeyboard(LEFT, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, (float)deltaTime);
+	//----------------------------------------------------------------------------------------------
 
 	// Teclas para la posicion de las camaras
 	if (action == GLFW_PRESS) {
 		switch (key) {
-		// Tecla numero 1. Puerta principal
+			// Tecla numero 1. Puerta principal
 		case GLFW_KEY_1:
 			camera.Position = glm::vec3(0.0f, 72.0f, -188.0f);
 			camera.Yaw = -180.0f;
@@ -1504,7 +1600,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 			camera.ProcessMouseMovement(0, 0);
 			break;
 
-		// Tecla numero 2. Cerca del elemento con animación (Cohete)
+			// Tecla numero 2. Cerca del elemento con animación (Cohete)
 		case GLFW_KEY_2:
 			camera.Position = glm::vec3(-112.0, 68.0f, 192.0);
 			camera.Yaw = -180.0f;
@@ -1512,7 +1608,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 			camera.ProcessMouseMovement(0, 0);
 			break;
 
-		// Tecla numero 3. Cerca del elemento con gran detalle
+			// Tecla numero 3. Cerca del elemento con gran detalle
 		case GLFW_KEY_3:
 			camera.Position = glm::vec3(-112.0f, 64.0f, 110.0f);
 			camera.Yaw = -180.0f;
@@ -1521,29 +1617,6 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 			break;
 		}
 	}
-
-	//To Configure Model
-	/*if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		posZ++;
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		posZ--;
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		posX--;
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		posX++;
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
-		rotRodIzq--;
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		rotRodIzq++;
-	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-		giroMonito--;
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		giroMonito++;
-	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-		lightPosition.x++;
-	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
-		lightPosition.x--;*/
-	
 
 	//Animación wey camminando C1_walking
 	//--------------------------------------------------------------------------------------------
@@ -1593,15 +1666,35 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		}
 	}
 
+	//Animación Paloma Triste
+	//--------------------------------------------------------------------------------------------
+	// Iniciar/Detener el salto con la tecla X (Toggle)
+	if (key == GLFW_KEY_X && action == GLFW_PRESS) {
+		aniPalomaTriste = !aniPalomaTriste;
+		if (aniPalomaTriste && estadoPalomaTriste == 0) {
+			estadoPalomaTriste = 1;
+		}
+	}
 
+	//--------------------------------------------------------------------------------------------
+	// Spaceship Aparece en el cielo
+	//--------------------------------------------------------------------------------------------
+	if (key == GLFW_KEY_B && action == GLFW_PRESS) {
+		aniSpaceship = !aniSpaceship;
+		if (aniSpaceship && estadoSpaceship == 0) {
+			estadoSpaceship = 1;
+		}
+	}
 
+	// RESET PARA LA NAVE ESPACIAL
+	//--------------------------------------------------------------------------------------------
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-		//Animación wey camminando C1_walking RESET
-		animacion ^= true;
-		estadoC1_walking = 0;
-		movC1_x = -300.0f;
-		movC1_z = -135.0f;
-		orientaC1 = 90.0f;
+		aniSpaceship = false;
+		estadoSpaceship = 0;
+		movSpaceship_x = 800.0f;
+		movSpaceship_y = 400.0f;
+		movSpaceship_z = 0.0f;
+		orientaSpaceship = 0.0f; // Ángulo inicial del Spaceship
 
 	}
 
