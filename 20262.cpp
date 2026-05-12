@@ -129,14 +129,15 @@ float orientaC7 = -90.0f; // Ángulo inicial del personaje
 //-----------------------------------------------------------------------------------------------------
 int stateArm = 0;
 float	turnBody = 180.0f,
-		movBody_x = -120.0f,
-		movBody_y = 55.7f,
-		movBody_z = 110.0f,
-		movUpper_y = 0.0f,
-		movFore_y = 0.0f,
-		movHandU_y = 0.0f,
-		movHandL_y = 0.0f;
+movBody_x = -120.0f,
+movBody_y = 55.7f,
+movBody_z = 110.0f,
+movUpper_y = 0.0f,
+movFore_y = 0.0f,
+movHandU_y = 0.0f,
+movHandL_y = 0.0f;
 bool	aniRobotic = false;
+
 
 //-----------------------------------------------------------------------------------------------------
 // PF - Rocket
@@ -159,11 +160,11 @@ int statePaper = 0;
 float	turnP_x = 0.0f,
 		turnP_y = 0.0f,
 		turnP_z = 0.0f,
-		movP_x = -20.0f,
-		movP_y = 9.0f,
-		movP_z = 3.0f,
+		movP_x = -125.5f,
+		movP_y = 63.8f,
+		movP_z = -82.0f,
 		movWL = 0.0f,
-		movWR = 0.0f;
+movWR = 0.0f;
 bool	aniPaper = false;
 
 //-----------------------------------------------------------------------------------------------------
@@ -173,10 +174,11 @@ int stateRobotS = 0;
 float	turnRS_x = 0.0f,
 		turnRS_y = 0.0f,
 		turnRS_z = 0.0f,
-		movRS_x = -40.0f,
-		movRS_z = 3.0f,
+		movRS_x = -107.0f,
+		movRS_z = -65.0f,
 		movHRS = 0.0f;
 bool	aniRS = false;
+
 
 
 //-----------------------------------------------------------------------------------------------------
@@ -231,20 +233,11 @@ float movSpaceship_x = 800.0f,
 float orientaSpaceship = -90.0f; // Ángulo inicial del Spaceship
 bool aniSpaceship = false;
 
-float	incX = 0.0f,
-incY = 0.0f,
-incZ = 0.0f,
-rotRodIzqInc = 0.0f,
-giroMonitoInc = 0.0f,
-giroCabezaInc = 0.0f,
-giroBrazoDerInc = 0.0f,
-giroBrazoIzqInc = 0.0f,
-giroPiernaDerInc = 0.0f,
-giroPiernaIzqInc = 0.0f;
+
 
 //con em MAX FRAMES son la cantidad de frames para generar la animacion. El detalle está en que consumirá memoria al guardar los datos para animar.
 #define MAX_FRAMES 9
-int i_max_steps = 60;
+int i_max_steps = 30;
 int i_curr_steps = 0;
 typedef struct _frame
 {
@@ -252,15 +245,18 @@ typedef struct _frame
 	float posX;		//Variable para PosicionX
 	float posY;		//Variable para PosicionY
 	float posZ;		//Variable para PosicionZ
-	float rotRodIzq;
-	float giroMonito;
-	float giroCabeza;
-	float giroBrazoDer;
-	float giroBrazoIzq;
-	float giroPiernaDer;
-	float giroPiernaIzq;
+
+
+	//ANIMACION POR KEYFRAMES PALOMA CHIDA
+	float palomaChidaX;
+	float palomaChidaY;
+	float palomaChidaZ;
+	float palomaChidaOri;
 
 }FRAME;
+
+// Incrementos de paloma chida
+float incPChidaX = 0.0f, incPChidaY = 0.0f, incPChidaZ = 0.0f, incPChidaOri = 0.0f;
 
 FRAME KeyFrame[MAX_FRAMES];
 int FrameIndex = 0;			// Introducir número en caso de tener Key guardados
@@ -274,21 +270,18 @@ void saveFrame(void)
 	//printf("frameindex %d\n", FrameIndex);
 	std::cout << "Frame Index = " << FrameIndex << std::endl;
 
-	KeyFrame[FrameIndex].posX = posX;
-	KeyFrame[FrameIndex].posY = posY;
-	KeyFrame[FrameIndex].posZ = posZ;
 
-	KeyFrame[FrameIndex].rotRodIzq = rotRodIzq;
-	KeyFrame[FrameIndex].giroMonito = giroMonito;
-	KeyFrame[FrameIndex].giroCabeza = giroCabeza;
-	KeyFrame[FrameIndex].giroBrazoDer = giroBrazoDer;
-	KeyFrame[FrameIndex].giroBrazoIzq = giroBrazoIzq;
-	KeyFrame[FrameIndex].giroPiernaDer = giroPiernaDer;
-	KeyFrame[FrameIndex].giroPiernaIzq = giroPiernaIzq;
 
-	std::cout << "PosX = " << posX << std::endl;
-	std::cout << "PosY = " << posY << std::endl;
-	std::cout << "PosZ = " << posZ << std::endl;
+	// Guardar estado actual de la Paloma
+	KeyFrame[FrameIndex].palomaChidaX = movPalomaChida_x;
+	KeyFrame[FrameIndex].palomaChidaY = movPalomaChida_y;
+	KeyFrame[FrameIndex].palomaChidaZ = movPalomaChida_z;
+	KeyFrame[FrameIndex].palomaChidaOri = orientaPalomaChida;
+
+	std::cout << "Frame de Paloma guardado en Index: " << FrameIndex << std::endl;
+	std::cout << "PalomaChidaX = " << movPalomaChida_x << std::endl;
+	std::cout << "PalomaChidaY = " << movPalomaChida_y << std::endl;
+	std::cout << "PalomaChidaZ = " << movPalomaChida_z << std::endl;
 
 	FrameIndex++;
 }
@@ -300,29 +293,24 @@ void resetElements(void)
 	posY = KeyFrame[0].posY;
 	posZ = KeyFrame[0].posZ;
 
-	rotRodIzq = KeyFrame[0].rotRodIzq;
-	giroMonito = KeyFrame[0].giroMonito;
-	giroCabeza = KeyFrame[0].giroCabeza;
-	giroBrazoDer = KeyFrame[0].giroBrazoDer;
-	giroBrazoIzq = KeyFrame[0].giroBrazoIzq;
-	giroPiernaDer = KeyFrame[0].giroPiernaDer;
-	giroPiernaIzq = KeyFrame[0].giroPiernaIzq;
+
+
+	// Resetear a la posición del primer KeyFrame
+	movPalomaChida_x = KeyFrame[0].palomaChidaX;
+	movPalomaChida_y = KeyFrame[0].palomaChidaY;
+	movPalomaChida_z = KeyFrame[0].palomaChidaZ;
+	orientaPalomaChida = KeyFrame[0].palomaChidaOri;
 
 }
 
 void interpolation(void)
 {
-	incX = (KeyFrame[playIndex + 1].posX - KeyFrame[playIndex].posX) / i_max_steps;
-	incY = (KeyFrame[playIndex + 1].posY - KeyFrame[playIndex].posY) / i_max_steps;
-	incZ = (KeyFrame[playIndex + 1].posZ - KeyFrame[playIndex].posZ) / i_max_steps;
 
-	rotRodIzqInc = (KeyFrame[playIndex + 1].rotRodIzq - KeyFrame[playIndex].rotRodIzq) / i_max_steps;
-	giroMonitoInc = (KeyFrame[playIndex + 1].giroMonito - KeyFrame[playIndex].giroMonito) / i_max_steps;
-	giroCabezaInc = (KeyFrame[playIndex + 1].giroCabeza - KeyFrame[playIndex].giroCabeza) / i_max_steps;
-	giroBrazoDerInc = (KeyFrame[playIndex + 1].giroBrazoDer - KeyFrame[playIndex].giroBrazoDer) / i_max_steps;
-	giroBrazoIzqInc = (KeyFrame[playIndex + 1].giroBrazoIzq - KeyFrame[playIndex].giroBrazoIzq) / i_max_steps;
-	giroPiernaDerInc = (KeyFrame[playIndex + 1].giroPiernaDer - KeyFrame[playIndex].giroPiernaDer) / i_max_steps;
-	giroPiernaIzqInc = (KeyFrame[playIndex + 1].giroPiernaIzq - KeyFrame[playIndex].giroPiernaIzq) / i_max_steps;
+	// Calcular pasos para la Paloma Chida
+	incPChidaX = (KeyFrame[playIndex + 1].palomaChidaX - KeyFrame[playIndex].palomaChidaX) / i_max_steps;
+	incPChidaY = (KeyFrame[playIndex + 1].palomaChidaY - KeyFrame[playIndex].palomaChidaY) / i_max_steps;
+	incPChidaZ = (KeyFrame[playIndex + 1].palomaChidaZ - KeyFrame[playIndex].palomaChidaZ) / i_max_steps;
+	incPChidaOri = (KeyFrame[playIndex + 1].palomaChidaOri - KeyFrame[playIndex].palomaChidaOri) / i_max_steps;
 }
 
 unsigned int generateTextures(const char* filename, bool alfa, bool isPrimitive)
@@ -396,18 +384,14 @@ void animate(void)
 		}
 		else
 		{
-			//Draw animation
-			posX += incX;
-			posY += incY;
-			posZ += incZ;
 
-			rotRodIzq += rotRodIzqInc;
-			giroMonito += giroMonitoInc;
-			giroCabeza += giroCabezaInc;
-			giroBrazoDer += giroBrazoDerInc;
-			giroBrazoIzq += giroBrazoIzqInc;
-			giroPiernaDer += giroPiernaDerInc;
-			giroPiernaIzq += giroPiernaIzqInc;
+
+			// Aplicar incrementos a la Paloma
+			movPalomaChida_x += incPChidaX;
+			movPalomaChida_y += incPChidaY;
+			movPalomaChida_z += incPChidaZ;
+			orientaPalomaChida += incPChidaOri;
+
 
 			i_curr_steps++;
 		}
@@ -655,6 +639,7 @@ void animate(void)
 			}
 		}
 	}
+
 
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Rocket
@@ -982,7 +967,7 @@ int main() {
 	monitors = glfwGetPrimaryMonitor();
 	getResolution();
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Practica 4 2026-2", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Proyecto Final | CGeIHC 2026-2", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -1124,43 +1109,12 @@ int main() {
 	//Inicialización de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
 	{
-		KeyFrame[i].posX = 0;
-		KeyFrame[i].posY = 0;
-		KeyFrame[i].posZ = 0;
-		KeyFrame[i].rotRodIzq = 0;
-		KeyFrame[i].giroMonito = 0;
-		KeyFrame[i].giroCabeza = 0;
-		KeyFrame[i].giroBrazoDer = 0;
-		KeyFrame[i].giroBrazoIzq = 0;
-		KeyFrame[i].giroPiernaDer = 0;
-		KeyFrame[i].giroPiernaIzq = 0;
+		KeyFrame[i].palomaChidaX = -200.0f;
+		KeyFrame[i].palomaChidaY = 56.0f;
+		KeyFrame[i].palomaChidaZ = -130.0f;
+		KeyFrame[i].palomaChidaOri = 0.0f;
 	}
 
-	/*
-		KeyFrame[0].posX = 0;
-		KeyFrame[0].posY = 0;
-		KeyFrame[0].posZ = 0;
-		KeyFrame[0].rotRodIzq = 0;
-		KeyFrame[0].giroMonito = 0;
-		KeyFrame[0].giroCabeza = 0;
-		KeyFrame[0].giroBrazoDer = 0;}
-
-		KeyFrame[1].posX = 0;
-		KeyFrame[1].posY = 0;
-		KeyFrame[1].posZ = 0;
-		KeyFrame[1].rotRodIzq = 0;
-		KeyFrame[1].giroMonito = 0;
-		KeyFrame[1].giroCabeza = 0;
-		KeyFrame[1].giroBrazoDer = 0;
-
-		KeyFrame[2].posX = 0;
-		KeyFrame[2].posY = 0;
-		KeyFrame[2].posZ = 0;
-		KeyFrame[2].rotRodIzq = 0;
-		KeyFrame[2].giroMonito = 0;
-		KeyFrame[2].giroCabeza = 0;
-		KeyFrame[2].giroBrazoDer = 0;
-	*/
 
 
 	// create transformations and Projection
@@ -1430,7 +1384,7 @@ int main() {
 		glm::vec3 vSRocket = glm::vec3(scaleRocket);
 
 		//BaseRocket
-		glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 0.0f, 55.0f));
+		glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(-127.0f, 63.0f, 192.0f));
 		modelBase = glm::rotate(modelBase, glm::radians(turnBase), glm::vec3(0.0f, 1.0f, 0.0f));
 		staticShader.setMat4("model", glm::scale(modelBase, vSRocket));
 		baseRocket.Draw(staticShader);
@@ -1495,7 +1449,7 @@ int main() {
 		glm::vec3 vSRS = glm::vec3(scaleRS);
 
 		//Body Robot
-		glm::mat4 modelBodyRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 3.0f, movRS_z));
+		glm::mat4 modelBodyRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 58.0f, movRS_z));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_x), glm::vec3(1.0f, 0.0f, 0.0f));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_y), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelBodyRS = glm::rotate(modelBodyRS, glm::radians(turnRS_z), glm::vec3(1.0f, 0.0f, 1.0f));
@@ -1503,7 +1457,7 @@ int main() {
 		bodyRobotS.Draw(staticShader);
 
 		//Head Robot
-		glm::mat4 modelHeadRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 9.0f, movRS_z));
+		glm::mat4 modelHeadRS = glm::translate(glm::mat4(1.0f), glm::vec3(movRS_x, 61.0f, movRS_z));
 		modelHeadRS = glm::rotate(modelHeadRS, glm::radians(movHRS), glm::vec3(0.0f, 1.0f, 0.0f));
 		staticShader.setMat4("model", glm::scale(modelHeadRS, vSRS));
 		headRobotS.Draw(staticShader);
@@ -1638,42 +1592,87 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 	}
 
-	//Animación Paloma Chida
+	//Animación Paloma Chida precargada
 	//--------------------------------------------------------------------------------------------
 	// Control de movimiento manual de la Paloma
+	/*if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		orientaPalomaChida = 0.0f; // Ajusta la rotación para que mire hacia donde camina 
+	}*/
+	// --- CONTROLES PALOMA CHIDA CON GIRO ---
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		orientaPalomaChida = 180.0f; // Ajusta la rotación para que mire hacia donde camina 
+		movPalomaChida_x += 0.5f;
+		orientaPalomaChida = 180.0f;   // Mira hacia -X
 	}
-	// Iniciar/Detener el salto con la tecla UP (Toggle)
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
-		aniPalomaChida = !aniPalomaChida;
-		if (aniPalomaChida && estadoPalomaChida == 0) {
-			estadoPalomaChida = 1;
-		}
-	}
-
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		orientaPalomaChida = 0.0f;
-		aniPalomaChida = !aniPalomaChida;
-		if (aniPalomaChida && estadoPalomaChida == 0) {
-			estadoPalomaChida = 2;
-		}
+		movPalomaChida_x -= 0.5f;
+		orientaPalomaChida = 0.0f;  // Mira hacia +X
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		//movPalomaChida_x -= 0.5f; // Izquierda
-		orientaPalomaChida = -90.0f;
-		aniPalomaChida = !aniPalomaChida;
-		if (aniPalomaChida && estadoPalomaChida == 0) {
-			estadoPalomaChida = 3;
-		}
+		movPalomaChida_z -= 0.5f;
+		orientaPalomaChida = -90.0f;    // Mira hacia -Z
 	}
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		//movPalomaChida_x += 0.5f; // Derecha 
-		orientaPalomaChida = 90.0f;
-		aniPalomaChida = !aniPalomaChida;
-		if (aniPalomaChida && estadoPalomaChida == 0) {
-			estadoPalomaChida = 4;
-		}
+		movPalomaChida_z += 0.5f;
+		orientaPalomaChida = 90.0f;  // Mira hacia +Z
+	}
+
+	// --- TECLA DE RESET (C) PALOMA CHIDA ---
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		play = false;
+		playIndex = 0;
+		i_curr_steps = 0;
+		// Posición inicial solicitada
+		movPalomaChida_x = -200.0f;
+		movPalomaChida_y = 56.0f;
+		movPalomaChida_z = -130.0f;
+		orientaPalomaChida = 0.0f;
+		std::cout << "Reset: Paloma Chida en posicion inicial." << std::endl;
+	}
+
+	if (key == GLFW_KEY_V && action == GLFW_PRESS)
+	{
+		std::cout << "Cargando animacion prehecha: Salto y Camina..." << std::endl;
+
+		// Reiniciamos el indice para escribir desde el principio
+		FrameIndex = 0;
+
+		// FRAME 0: Posicion Inicial (En el nido)
+		KeyFrame[FrameIndex].palomaChidaX = -200.0f;
+		KeyFrame[FrameIndex].palomaChidaY = 56.0f;
+		KeyFrame[FrameIndex].palomaChidaZ = -130.0f;
+		KeyFrame[FrameIndex].palomaChidaOri = 180.0f; // Mirando hacia adelante (+Z)
+		FrameIndex++;
+
+		// FRAME 1: Punto maximo del salto (Sube en Y, avanza en X)
+		KeyFrame[FrameIndex].palomaChidaX = -190.0f;
+		KeyFrame[FrameIndex].palomaChidaY = 70.0f; // Salto alto
+		KeyFrame[FrameIndex].palomaChidaZ = -130.0f;
+		KeyFrame[FrameIndex].palomaChidaOri = 180.0f;
+		FrameIndex++;
+
+		// FRAME 2: Aterrizaje del salto (Baja en Y, sigue avanzando en X)
+		KeyFrame[FrameIndex].palomaChidaX = -180.0f;
+		KeyFrame[FrameIndex].palomaChidaY = 56.0f; // Vuelve al suelo
+		KeyFrame[FrameIndex].palomaChidaZ = -130.0f;
+		KeyFrame[FrameIndex].palomaChidaOri = 180.0f;
+		FrameIndex++;
+
+		// FRAME 3: Primer paso de caminata
+		KeyFrame[FrameIndex].palomaChidaX = -165.0f;
+		KeyFrame[FrameIndex].palomaChidaY = 56.0f;
+		KeyFrame[FrameIndex].palomaChidaZ = -130.0f;
+		KeyFrame[FrameIndex].palomaChidaOri = 180.0f;
+		FrameIndex++;
+
+		// FRAME 4: Segundo paso de caminata (Posicion final)
+		KeyFrame[FrameIndex].palomaChidaX = -150.0f;
+		KeyFrame[FrameIndex].palomaChidaY = 56.0f;
+		KeyFrame[FrameIndex].palomaChidaZ = -130.0f;
+		KeyFrame[FrameIndex].palomaChidaOri = 180.0f;
+		FrameIndex++;
+
+		std::cout << "Animacion cargada. Presiona 'Z' para reproducir." << std::endl;
 	}
 
 	//Animación Paloma Triste
@@ -1710,7 +1709,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 	
 	//To play KeyFrame animation 
-	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	/*if (key == GLFW_KEY_Z && action == GLFW_PRESS)
 	{
 		if (play == false && (FrameIndex > 1))
 		{
@@ -1727,6 +1726,16 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		{
 			play = false;
 			std::cout << "Not enough Key Frames" << std::endl;
+		}
+	}*/
+
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+		if (!play && FrameIndex > 1) {
+			resetElements();
+			interpolation();
+			play = true;
+			playIndex = 0;
+			i_curr_steps = 0;
 		}
 	}
 
@@ -1829,6 +1838,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 	//-----------------------------------------------------------------------------------------------------
 	// PF - Robot Duck
 	//-----------------------------------------------------------------------------------------------------
+	/*
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
 		aniDuck ^= true;
 		if (stateDuck == 0) {
@@ -1847,7 +1857,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 		movHeadD_y = 0.0f;
 		movLowerD_y = 0.0f;
 		movTailD_y = 0.0f;
-	}
+	}*/
 
 
 }
